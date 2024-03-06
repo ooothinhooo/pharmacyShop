@@ -1,0 +1,50 @@
+:root {
+    --primary-color: #187733;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: "Poppins";
+    background: #f6f6f6;
+    height: 100vh;
+}
+
+.container {
+    @apply w-full mx-auto px-[15px]
+}
+
+.add_product-itemField {
+    @apply w-full text-[#7b7b7b] text-[16px]
+}
+
+.add_product-itemField input {
+    @apply box-border w-full h-[50px] rounded pl-[15px] border border-[#c3c3c3] outline-none text-[#7b7b7b] text-[14px]
+}
+
+.add_product-price {
+    @apply flex gap-10
+}
+
+.add_product-selector {
+    @apply p-[10px] w-[200px] h-[50px] text-[14px] text-[#7b7b7b] border border-[#7b7b7b8b] rounded
+}
+
+.add_product {
+    @apply max-[800px]:w-auto max-[800px]:p-[30px] max-[800px]:m-5 
+}
+
+.list_product-format-main {
+    @apply grid grid-cols-[1fr_1fr_3fr_1fr_1fr_1fr_1fr] gap-[10px] w-full py-5 text-[#454545] text-[15px] font-semibold max-[800px]:p-[15px_0px] max-[800px]:text-[#454545] max-[800px]:text-[12px]
+}
+
+.list_product-format {
+    @apply items-center font-medium
+}
+
+.list_product {
+    @apply max-[800px]:box-border max-[800px]:w-[95%] max-[800px]:h-full max-[800px]:p-[10px_30px] max-[800px]:m-[20px_auto]
+}
