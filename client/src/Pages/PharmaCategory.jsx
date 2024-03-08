@@ -8,7 +8,7 @@ import slugify from "slugify";
 export const PharmaCategory = (props) => {
   const [current, setCurrent] = useState(1);
   const pageSize = 12;
-  // use db json to get information
+  // get all products
   const { all_products } = useContext(ShopContext);
 
   // filter products by category
@@ -18,15 +18,21 @@ export const PharmaCategory = (props) => {
 
   const uniqueCategories = [...new Set(filteredProducts)];
 
+  console.log(uniqueCategories);
+
   const items = [
     {
       key: "1",
       label: "Danh Mục",
       children: uniqueCategories.map((category, index) => {
         const slug = slugify(category, { lower: true });
+        const slug1 = slugify("Chăm sóc nhan sắc", { lower: true });
         return (
           <div key={index} className="py-[6px]">
             <Link to={`/${slug}`}>{category}</Link>
+            {console.log(category)}
+            {console.log(slug)}
+            {console.log(slug1)}
           </div>
         );
       }),
@@ -50,6 +56,7 @@ export const PharmaCategory = (props) => {
   );
 
   const [showPrice, setShowPrice] = useState(false);
+
   const handleShowPrice = () => {
     setShowPrice(!showPrice);
   };
@@ -159,11 +166,13 @@ export const PharmaCategory = (props) => {
                     return (
                       <Item
                         key={i}
-                        MaSP={product.id}
-                        HinhAnh={product.image}
-                        TenThuoc={product.name}
-                        Gia={product.price}
-                        GiaDeal={product.price - (product.price * product.sale) / 100}
+                        id={product.id}
+                        image={product.image}
+                        name={product.name}
+                        price={product.price}
+                        sale={
+                          product.price - (product.price * product.sale) / 100
+                        }
                       />
                     );
                   })}

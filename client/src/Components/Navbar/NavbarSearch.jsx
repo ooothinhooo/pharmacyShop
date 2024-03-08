@@ -5,12 +5,42 @@ import { Link } from "react-router-dom";
 import { LoginSignup } from "../../Pages/LoginSignup";
 import { ShopContext } from "../../Context/ShopContext";
 import { Dropdown } from "antd";
+import axios from "axios";
 
 export const NavbarSearch = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [prevSearchQuery, setPrevSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async (query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setPrevSearchQuery("");
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/search?query=${query}`
+      );
+      const { products } = response.data;
+      console.log(products);
+      setSearchResults(products);
+      setPrevSearchQuery(query);
+    } catch (error) {
+      console.error("Lỗi tìm kiếm:", error);
+    }
+  };
+
   const [show, setShow] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
-  const { getTotalCartItems, getTotalCartAmountWithsale, setStateLogin, userData } =
-    useContext(ShopContext);
+
+  const {
+    getTotalCartItems,
+    getTotalCartAmountWithsale,
+    setStateLogin,
+    userData,
+  } = useContext(ShopContext);
 
   const showInfoContact = () => {
     setShow(true);
@@ -19,7 +49,6 @@ export const NavbarSearch = () => {
   const hideInfoContact = () => {
     setShow(false);
   };
-
 
   // dropdown account
   const items = [
@@ -46,6 +75,8 @@ export const NavbarSearch = () => {
     },
   ];
 
+  console.log(userData);
+
   return (
     <div>
       <div className="navbar flex-wrap flex justify-between items-center 1lg:gap-[15px] relative pt-[12px] pb-[10px]">
@@ -59,14 +90,48 @@ export const NavbarSearch = () => {
           </Link>
         </div>
 
-        <form action="search" className="nav_search relative flex-1 w-[45%]">
-          <input
-            type="text"
-            placeholder="Tìm kiếm sản phẩm..."
-            className="w-full h-[40px] p-[10px] rounded border-0 bg-[#fff]"
-          />
-          <i className="fa-solid fa-magnifying-glass absolute top-[10px] right-[10px] text-[#4cb551]"></i>
-        </form>
+        <div className="nav_search relative flex-1 w-[45%]">
+          <form>
+            <input
+              type="text"
+              placeholder="Tìm kiếm sản phẩm..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handleSearch(e.target.value);
+              }}
+              onFocus={() => {
+                setSearchQuery(prevSearchQuery);
+                handleSearch(prevSearchQuery);
+              }}
+              onBlur={() => setSearchResults([])}
+              className="w-full h-[40px] p-[10px] rounded border-0 bg-[#fff]"
+            />
+            <i className="fa-solid fa-magnifying-glass absolute top-[10px] right-[10px] text-[#4cb551]"></i>
+          </form>
+          {searchResults.length > 0 && (
+            <div className="absolute top-[60px] flex flex-col h-fit w-full z-10 bg-white box-border rounded-xl [box-shadow:0_0_16px_rgba(0,0,0,.2)] max-h-[70vh] overflow-y-auto">
+              <div className="flex-[30_1] p-3 box-border">
+                <h3>Kết quả tìm kiếm:</h3>
+                {searchResults.map((product) => (
+                  <Link
+                    to={`/products/${product.id}`}
+                    key={product.id}
+                    // onClick={() => setSearchResults([])}
+                    className="flex items-center p-[10px] rounded-lg text-[15px]"
+                  >
+                    <img
+                      src={product.image}
+                      alt="result search img"
+                      className="w-[80px] mr-4"
+                    />
+                    <span>{product.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         <Link to="/cart">
           <div className="justify-around bg-[#0e562e] rounded px-[10px] py-[2px] mx-auto flex items-center h-[42px] max-w-[140px] box-border cursor-pointer nav_cart ">
@@ -150,8 +215,7 @@ export const NavbarSearch = () => {
               }}
             >
               <Link to={"/account"} className="flex items-center">
-                <h1>ac</h1>
-                
+                <h1>{userData?.namecus}</h1>
                 <i className="fa-regular fa-user pl-3"></i>
               </Link>
             </Dropdown>

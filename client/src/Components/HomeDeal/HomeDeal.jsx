@@ -1,31 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import all_products from "../Assets/dataFake";
 import { ItemDeal } from "../ItemDeal/ItemDeal";
+import { ShopContext } from "../../Context/ShopContext";
 export const HomeDeal = () => {
-  // function Next(props) {
-  //   const { className, style, onClick } = props;
-  //   return (
-  //     <div
-  //       className={className}
-  //       style={{ ...style, display: "block" }}
-  //       onClick={onClick}
-  //     />
-  //   );
-  // }
-
-  // function Prev(props) {
-  //   const { className, style, onClick } = props;
-  //   return (
-  //     <div
-  //       className={className}
-  //       style={{ ...style, display: "block" }}
-  //       onClick={onClick}
-  //     />
-  //   );
-  // }
+  const { all_products } = useContext(ShopContext);
 
   var settings = {
     dots: true,
@@ -33,8 +13,6 @@ export const HomeDeal = () => {
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 5,
-    // nextArrow: <Next />,
-    // prevArrow: <Prev />,
     initialSlide: 0,
     responsive: [
       {
@@ -76,16 +54,21 @@ export const HomeDeal = () => {
           <div className="deal-list slider-container">
             <Slider {...settings}>
               {all_products.map((product, i) => {
-                return (
-                  <ItemDeal
-                    key={i}
-                    MaSP={product.MaSP}
-                    HinhAnh={product.HinhAnh}
-                    TenThuoc={product.TenThuoc}
-                    Gia={product.Gia}
-                    GiaDeal={product.Gia}
-                  />
-                );
+                if (product.sale > 0) {
+                  return (
+                    <ItemDeal
+                      key={i}
+                      id={product.id}
+                      image={product.image}
+                      name={product.name}
+                      price={product.price}
+                      numSale={product.sale}
+                      sale={product.price * (1 - product.sale / 100)}
+                    />
+                  );
+                } else {
+                  return null;
+                }
               })}
             </Slider>
           </div>

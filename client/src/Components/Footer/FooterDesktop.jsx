@@ -191,7 +191,7 @@ export const FooterDesktop = () => {
               href="/404"
               className="footer_top-link"
             >
-              <p className="flex items-center text-black">
+              <p className="flex items-center text-black mb-5">
                 <i className="fa-brands fa-youtube mr-[10px] text-red-600 text-[20px]"></i>
                 Youtube
               </p>

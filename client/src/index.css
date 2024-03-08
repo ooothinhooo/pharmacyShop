@@ -250,6 +250,7 @@ table tbody td {
   @apply font-normal text-[13px] text-[#112950] mb-2 flex
 }
 
+
 /* responsive */
 @media screen and (max-width: 1240px) {
   .banner-body {

@@ -22,11 +22,11 @@ function App() {
             <Route path="/san-pham-tien-loi" element={<PharmaCategory title="Sản phẩm tiện lợi" category={"Sản phẩm tiện lợi"}/>}></Route>
             <Route path="/thuc-pham-chuc-nang" element={<PharmaCategory title="Thực phẩm chức năng" category={"Thực phẩm chức năng"}/>}></Route>
             <Route path="/me-va-be" element={<PharmaCategory title="Mẹ và Bé" category={"Mẹ và Bé"}/>}></Route>
-            <Route path="/cham-soc-sac-dep" element={<PharmaCategory title="Chăm sóc sắc đẹp" category={"Chăm sóc sắc đep"}/>}></Route>
+            <Route path="/cham-soc-nhan-sac" element={<PharmaCategory title="Chăm sóc nhan sắc" category={"Chăm sóc nhan sắc"}/>}></Route>
             <Route path="/thiet-bi-y-te" element={<PharmaCategory title="Thiết bị y tế" category={"Thiết bị y tế"}/>}></Route>
 
             <Route path="/products" element={<PharmaProduct/>}>
-              <Route path=":productId" element={<PharmaProduct/>} />
+              <Route path=":productId"></Route>
             </Route>
             
             <Route path="/cart" element={<PharmaCart/>}></Route>

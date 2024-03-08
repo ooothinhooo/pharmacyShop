@@ -67,8 +67,8 @@ export const NavbarMenu = () => {
       <div className="cate-menu">
         <span className="root-cate">
           <div className="cursor-pointer">
-            <Link to={"/cham-soc-sac-dep"}>
-              <strong className="cate-title ">Chăm sóc sắc đẹp</strong>
+            <Link to={"/cham-soc-nhan-sac"}>
+              <strong className="cate-title ">Chăm sóc nhan sắc</strong>
             </Link>
           </div>
         </span>

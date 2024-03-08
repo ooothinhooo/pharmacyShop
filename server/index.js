@@ -31,9 +31,9 @@ app.use(express.json());
 app.use(cors());
 
 // Database Connection With MongoDB
-mongoose.connect(
-  "mongodb+srv://thientan2812:Tan281201!@cluster0.ibc2q3o.mongodb.net/pharmacyShop"
-);
+// mongoose.connect(
+//   "mongodb+srv://thientan2812:Tan281201!@cluster0.ibc2q3o.mongodb.net/pharmacyShop"
+// );
 
 // API creation
 app.get("/", (req, res) => {
@@ -140,6 +140,26 @@ app.get("/allProducts", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+  }
+});
+
+// Create get search products endpoint
+app.get("/search", async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const result = await db.query(`
+      SELECT * FROM medicines
+      WHERE name LIKE '%${query}%'
+    `);
+
+    res.json({
+      success: true,
+      products: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, error: "Lỗi máy chủ" });
   }
 });
 

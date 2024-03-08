@@ -83,7 +83,7 @@ export const HomeService = () => {
             </div>
 
             <form
-              action="#"
+              action=""
               className="our_service-register flex justify-center items-center pb-[50px]"
             >
               <p>

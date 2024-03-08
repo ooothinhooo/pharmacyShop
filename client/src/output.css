@@ -1529,12 +1529,6 @@ code {
 
 /* system */
 
-.deal-list .slick-prev:before, .deal-list .slick-next:before {
-  color: #2e8555 !important;
-  opacity: 0.8 !important;
-  font-size: 24px !important;
-}
-
 .after\:block::after {
   content: var(--tw-content);
   display: block;

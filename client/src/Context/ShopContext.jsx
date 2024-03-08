@@ -14,75 +14,74 @@ const getDefaultCart = () => {
 };
 
 const ShopContextProvider = (props) => {
-  const [all_products, setAll_Products] = useState([]);
+  const [all_products, setAll_Products] = useState([])
   const [cartItems, setCartItems] = useState(getDefaultCart());
   const [stateLogin, setStateLogin] = useState("Đăng ký");
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:4000/allProducts")
       .then((response) => response.json())
-      .then((data) => setAll_Products(data.products));
+      .then((data) => setAll_Products(data.products))
 
-      if(localStorage.getItem('auth-token')) {
-        fetch('http://localhost:4000/getCart', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/form-data',
-            'Content-Type': 'application/json',
-            'auth-token': `${localStorage.getItem('auth-token')}`
-          },
-          body:"",
-        })
+    if (localStorage.getItem("auth-token")) {
+      fetch("http://localhost:4000/getCart", {
+        method: "POST",
+        headers: {
+          Accept: "application/form-data",
+          "Content-Type": "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
+        },
+        body: "",
+      })
         .then((response) => response.json())
-        .then((data) => setCartItems(data))
+        .then((data) => setCartItems(data));
 
-        
-        fetch('http://localhost:4000/userProfile', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/form-data',
-            'Content-Type': 'application/json',
-            'auth-token': `${localStorage.getItem('auth-token')}`
-          },
-          body:"",
-        })
+      fetch("http://localhost:4000/userProfile", {
+        method: "POST",
+        headers: {
+          Accept: "application/form-data",
+          "Content-Type": "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
+        },
+        body: "",
+      })
         .then((response) => response.json())
-        .then((data) => setUserData(data))
-      }
+        .then((data) => setUserData(data));
+    }
   }, []);
 
   const addToCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    if(localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/addToCart', {
-        method: 'POST',
+    if (localStorage.getItem("auth-token")) {
+      fetch("http://localhost:4000/addToCart", {
+        method: "POST",
         headers: {
-          Accept: 'application/form-data',
-          'Content-Type': 'application/json',
-          'auth-token': `${localStorage.getItem('auth-token')}`
+          Accept: "application/form-data",
+          "Content-Type": "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
         },
-        body: JSON.stringify({"itemId": itemId}),
+        body: JSON.stringify({ itemId: itemId }),
       })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
+        .then((response) => response.json())
+        .then((data) => console.log(data));
     }
   };
 
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    if(localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/removeFromCart', {
-        method: 'POST',
+    if (localStorage.getItem("auth-token")) {
+      fetch("http://localhost:4000/removeFromCart", {
+        method: "POST",
         headers: {
-          Accept: 'application/form-data',
-          'Content-Type': 'application/json',
-          'auth-token': `${localStorage.getItem('auth-token')}`
+          Accept: "application/form-data",
+          "Content-Type": "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
         },
-        body: JSON.stringify({"itemId": itemId}),
+        body: JSON.stringify({ itemId: itemId }),
       })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
+        .then((response) => response.json())
+        .then((data) => console.log(data));
     }
   };
 

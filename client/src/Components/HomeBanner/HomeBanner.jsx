@@ -19,7 +19,7 @@ export const HomeBanner = () => {
               <div className="banner_cta-title text-[26px] text-center font-bold mb-[24px] text-[#187733] [text-shadow:0px_5px_20px_rgba(81,67,21,0.5)]">
                 Mua thuốc thuận tiện hơn tại Pharma Shop
               </div>
-              <Link to={"/login"}>
+              <Link to={"/account/prescriptions"}>
                 <div className="flex">
                   <button className="banner_cta-btn bg-[#187733] text-white px-6 py-2 rounded-md hover:opacity-80 [transition:all_0.25s_linear]">
                     Đặt thuốc ngay
