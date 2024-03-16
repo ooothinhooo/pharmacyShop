@@ -14,59 +14,66 @@ export const CartItemHasProduct = () => {
       <div className="container py-4 flex justify-between">
         <div className="cart_items bg-white w-[67%] rounded-xl">
           <div className="p-6">
-            <table className="w-[100%] text-left">
-              <thead>
-                <tr>
-                  <th className="text-left">Sản Phẩm</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Đơn giá</th>
-                  <th>Số lượng</th>
-                  <th>Thành tiền</th>
-                  <th></th>
-                </tr>
-              </thead>
+            <div className="grid grid-cols-[1fr_4fr_1fr_1fr_1fr_1fr] mb-5 gap-[10px] w-[100%] text-left">
+              <p className="text-left">Sản Phẩm</p>
+              <p>Tên sản phẩm</p>
+              <p>Đơn giá</p>
+              <p>Số lượng</p>
+              <p>Thành tiền</p>
+              <p></p>
+            </div>
+
+            <div>
+              <hr />
               {all_products.map((e, i) => {
                 if (cartItems[e.id] > 0) {
                   return (
-                    <tbody key={i}>
-                      <tr>
-                        <td>
-                          <Link to={`/products/${e.id}`}>
-                            <img src={e.image} alt="" className="w-[72px]" />
-                          </Link>
-                        </td>
-                        <td>
-                          <p className="text-left">{e.name}</p>
-                        </td>
-                        <td>
-                          <Link to={`/products/${e.id}`}>
-                            <p>{e.price * (1 - e.sale / 100)}đ</p>
-                          </Link>
-                        </td>
-                        <td>
-                          <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
-                            {cartItems[e.id]}
-                          </button>
-                        </td>
-                        <td>
-                          <p>{(e.price * (1 - e.sale/100)) * cartItems[e.id]}đ</p>
-                        </td>
-                        <td>
-                          <p
-                            onClick={() => {
-                              removeFromCart(e.id);
-                            }}
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </p>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <div
+                      className="w-full py-5 grid grid-cols-[1fr_4fr_1fr_1fr_1fr_1fr] gap-[10px] items-center"
+                      key={i}
+                    >
+                      <Link to={`/products/${e.id}`}>
+                        <img src={e.image} alt="" className="w-[72px]" />
+                      </Link>
+
+                      <Link to={`/products/${e.id}`}>
+                        <p className="text-left product_name">{e.name}</p>
+                      </Link>
+
+                      <p>
+                        {(e.price * (1 - e.sale / 100)).toLocaleString("vi-VN")}
+                        đ
+                      </p>
+
+                      <p>
+                        <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
+                          {cartItems[e.id]}
+                        </button>
+                      </p>
+
+                      <p>
+                        {(
+                          e.price *
+                          (1 - e.sale / 100) *
+                          cartItems[e.id]
+                        ).toLocaleString("vi-VN")}
+                        đ
+                      </p>
+
+                      <p
+                        className="text-center"
+                        onClick={() => {
+                          removeFromCart(e.id);
+                        }}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </p>
+                    </div>
                   );
                 }
                 return null;
               })}
-            </table>
+            </div>
           </div>
         </div>
 
@@ -79,7 +86,9 @@ export const CartItemHasProduct = () => {
               <div className="flex justify-between mb-[24px]">
                 <span>Tạm tính </span>
                 <p className="m-0 text-red-500">
-                  <b>{getTotalCartAmountWithsale()} đ</b>
+                  <b>
+                    {getTotalCartAmountWithsale().toLocaleString("vi-VN")} đ
+                  </b>
                 </p>
               </div>
             </div>

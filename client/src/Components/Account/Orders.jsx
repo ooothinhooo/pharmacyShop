@@ -7,7 +7,7 @@ export const Orders = () => {
     console.log(`selected ${value}`);
   };
   return (
-    <div className="desktop_big flex-1 box-border bg-white rounded-xl min-h-[300px] h-fit p-6">
+    <div className="desktop_big flex-1 box-border bg-white rounded-xl min-h-[300px] h-fit p-6 sticky top-[110px]">
       <div className="desktop_head text-[24px] font-bold leading-8">
         <h1>Lịch sử đơn hàng</h1>
       </div>

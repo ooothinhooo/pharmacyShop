@@ -1,10 +1,72 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
+import { ShopContext } from "../../Context/ShopContext";
 
 export const AccountBig = () => {
-  const [date, setDate] = useState(new Date());
+  const [image, setImage] = useState(false);
+  const { userData } = useContext(ShopContext);
+  console.log(userData);
+  const [userDetail, setUserDetail] = useState({
+    name: "khach hang",
+    gender: "",
+    date: new Date().toLocaleDateString(),
+    phone: "",
+    email: "",
+  });
+
+  const imageHandle = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const changeHandle = (e) => {
+    console.log(e.target.name);
+    setUserDetail({ ...userDetail, [e.target.name]: e.target.value });
+  };
+
+  const UpdateProfile = async () => {
+    console.log(userDetail);
+
+    let responseData;
+    let user = userDetail;
+    let formData = new FormData();
+    formData.append("user", image);
+
+    await fetch("http://localhost:4000/uploadAvatar", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        responseData = data;
+      });
+
+    if (responseData.success) {
+      user.image = responseData.image_url;
+      console.log(user);
+
+      await fetch("http://localhost:4000/updateProfile", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+        body: JSON.stringify(user),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          data.success
+            ? alert("Cập nhật thông tin thành công")
+            : alert("Cập nhật thông tin thất bại");
+        });
+    }
+  };
+
   return (
     <div className="desktop_big flex-1 box-border bg-white rounded-xl min-h-[300px] h-fit p-6">
       <div className="desktop_head text-[24px] font-bold leading-8">
@@ -18,128 +80,177 @@ export const AccountBig = () => {
                 <input
                   type="file"
                   accept=".jpg, .jpeg, .png"
-                  className="hidden"
-                  id="avatar"
+                  id="avatar_input"
+                  onChange={imageHandle}
+                  hidden
                 />
-                <figure className="w-[120px] h-[120px] bg-[#f2f6f3] rounded-[50%] !my-0 !mx-auto overflow-hidden flex justify-center items-center">
-                  <i className="fa-solid fa-plus text-[34px] text-[#8e9aab]"></i>
-                </figure>
-                <label htmlFor="avatar">
-                  <button className="text-[15px] font-normal leading-[22px] text-primaryColor underline bg-none mt-5">
-                    Bấm để cập nhật ảnh mới
-                  </button>
+                <label htmlFor="avatar_input">
+                  <div className="cursor-pointer">
+                    <figure className="w-[120px] h-[120px] bg-[#f2f6f3] rounded-[50%] !my-0 !mx-auto overflow-hidden flex justify-center items-center">
+                      {image ? (
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt="upload"
+                          className="object-cover object-center"
+                        />
+                      ) : userData?.avatar ? (
+                        <img
+                          src={userData?.avatar}
+                          alt="avatar"
+                          className="object-cover object-center"
+                        />
+                      ) : (
+                        <i className=" fa-solid fa-plus text-[34px] text-[#8e9aab]"></i>
+                      )}
+                    </figure>
+
+                    <div className="cursor-pointer text-[15px] font-normal leading-[22px] text-primaryColor underline bg-none mt-5">
+                      Bấm để cập nhật ảnh mới
+                    </div>
+                  </div>
                 </label>
               </div>
             </div>
           </div>
 
           <div className="account_detail w-[415px] ">
-            <form action="#">
-              <div>
-                <div className="inputTextField">
-                  <label
-                    htmlFor="full_name"
-                    className="text-[12px] leading-[18px]"
-                  >
-                    Họ và tên
-                    <span className="ml-[3px] text-[#f33060]">*</span>
-                  </label>
-                  <div className="inputTextField_group">
-                    <input
-                      id="full_name"
-                      type="text"
-                      name="full_name"
-                      maxLength="150"
-                      placeholder="Vui lòng nhập họ tên"
-                      autoComplete="on"
-                      defaultValue="khach hang"
-                      className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="account_detail-gender mt-4">
-                <label htmlFor="" className="text-[12px]">
-                  Giới tính
-                </label>
-                <div className="flex mt-[10px]">
-                  <div className="radioButton box-border mb-0 text-[14px] mr-[60px]">
-                    <input
-                      type="radio"
-                      name="gender"
-                      id="nam"
-                      className="mr-2"
-                    />
-                    <label htmlFor="nam">Nam</label>
-                  </div>
-                  <div className="radioButton box-border mb-0 text-[14px] mr-[60px]">
-                    <input
-                      type="radio"
-                      name="gender"
-                      id="nu"
-                      className="mr-2"
-                    />
-                    <label htmlFor="nu">Nữ</label>
-                  </div>
-                  <div className="radioButton box-border mb-0 text-[14px]">
-                    <input
-                      type="radio"
-                      name="gender"
-                      id="khac"
-                      className="mr-2"
-                    />
-                    <label htmlFor="khac">Khác</label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="account_detail-birthday mt-4">
-                <label htmlFor="" className="text-[12px]">
-                  Ngày tháng năm sinh{" "}
+            <div>
+              <div className="inputTextField">
+                <label htmlFor="name" className="text-[12px] leading-[18px]">
+                  Họ và tên
                   <span className="ml-[3px] text-[#f33060]">*</span>
                 </label>
-                <div className="birthday_field border-b border-[#e5e5e5] mb-[10px]">
-                  {
-                    <DatePicker
-                      onChange={setDate}
-                      value={date}
-                      className="w-full"
-                    //   clearIcon
-                    />
-                  }
-                </div>
-              </div>
-
-              <div className="account_detail-phone mt-4">
-                <label htmlFor="" className="text-[12px]">
-                  Số điện thoại
-                  <span className="ml-[3px] text-[#f33060]">*</span>
-                </label>
-                <div>
+                <div className="inputTextField_group">
                   <input
-                    type="number"
-                    name="phone_number"
-                    value="0866554764"
-                    disabled
+                    type="text"
+                    name="name"
+                    value={
+                      userData?.namecus ? userData.namecus : userDetail.name
+                    }
+                    onChange={changeHandle}
                     className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                   />
                 </div>
               </div>
+            </div>
 
-              <div className="account_detail-email mt-4">
-                <div>
-                  <label htmlFor="" className="text-[12px]">
-                    Email
-                    <span className="ml-[3px] text-[#f33060]">*</span>
-                  </label>
-                  <div>
-                    <input type="text" name="email" className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full" />
-                  </div>
+            <div className="account_detail-gender mt-4">
+              <label htmlFor="" className="text-[12px]">
+                Giới tính
+              </label>
+              <div className="flex mt-[10px]">
+                <div className="radioButton box-border mb-0 text-[14px] mr-[60px]">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="nam"
+                    value="Nam"
+                    className="mr-2"
+                    checked={
+                      userData?.gender
+                        ? userData.gender === "Nam"
+                        : userDetail.gender === "Nam"
+                    }
+                    onChange={changeHandle}
+                  />
+                  <label htmlFor="nam">Nam</label>
+                </div>
+                <div className="radioButton box-border mb-0 text-[14px] mr-[60px]">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="nu"
+                    value="Nữ"
+                    className="mr-2"
+                    checked={
+                      userData?.gender
+                        ? userData.gender === "Nữ"
+                        : userDetail.gender === "Nữ"
+                    }
+                    onChange={changeHandle}
+                  />
+                  <label htmlFor="nu">Nữ</label>
+                </div>
+                <div className="radioButton box-border mb-0 text-[14px]">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="khac"
+                    value="Khác"
+                    className="mr-2"
+                    checked={
+                      userData?.gender
+                        ? userData.gender === "Khác"
+                        : userDetail.gender === "Khác"
+                    }
+                    onChange={changeHandle}
+                  />
+                  <label htmlFor="khac">Khác</label>
                 </div>
               </div>
-              <button type="submit" className="border-none flex items-center rounded-xl w-full leading-[54px] text-[17px] text-center font-bold justify-center !bg-primaryColor text-white mt-5 mb-10">Lưu</button>
-            </form>
+            </div>
+
+            <div className="account_detail-birthday mt-4">
+              <label htmlFor="" className="text-[12px]">
+                Ngày tháng năm sinh{" "}
+                <span className="ml-[3px] text-[#f33060]">*</span>
+              </label>
+              <div className="birthday_field border-b border-[#e5e5e5] mb-[10px]">
+                {
+                  <DatePicker
+                    onChange={(date) =>
+                      setUserDetail({
+                        ...userDetail,
+                        date: date.toLocaleDateString(),
+                      })
+                    }
+                    value={userData?.date ? userData.date : userDetail.date}
+                    className="w-full"
+                    //   clearIcon
+                  />
+                }
+              </div>
+            </div>
+
+            <div className="account_detail-phone mt-4">
+              <label htmlFor="phone" className="text-[12px]">
+                Số điện thoại
+                <span className="ml-[3px] text-[#f33060]">*</span>
+              </label>
+              <div>
+                <input
+                  type="text"
+                  name="phone"
+                  value={userData?.phone ? userData.phone : userDetail.phone}
+                  onChange={changeHandle}
+                  className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
+                />
+              </div>
+            </div>
+
+            <div className="account_detail-email mt-4">
+              <div>
+                <label htmlFor="" className="text-[12px]">
+                  Email
+                  <span className="ml-[3px] text-[#f33060]">*</span>
+                </label>
+                <div>
+                  <input
+                    type="text"
+                    name="email"
+                    value={userData?.email ? userData.email : userDetail.email}
+                    onChange={changeHandle}
+                    className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => UpdateProfile()}
+              className="border-none flex items-center rounded-xl w-full leading-[54px] text-[17px] text-center font-bold justify-center !bg-primaryColor text-white mt-5 mb-10"
+            >
+              Lưu
+            </button>
           </div>
         </div>
       </div>

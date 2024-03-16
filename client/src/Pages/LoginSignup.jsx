@@ -98,7 +98,9 @@ export const LoginSignup = ({ onClose }) => {
                 className="w-full h-[40px] px-[38px] rounded border-0 outline-none border-b mt-3"
               />
             </div>
-            <label className="relative p-3">
+
+            {stateLogin === "Đăng ký" ? (
+              <label className="relative p-3">
               <input type="checkbox" />
               <span className="ml-2 text-[14px]">
                 Tôi đã đọc và đồng ý điều khoản sử dụng
@@ -107,11 +109,13 @@ export const LoginSignup = ({ onClose }) => {
                 </span>
               </span>
             </label>
+            ) : ""}
+            
             <button
               onClick={() => {
                 stateLogin === "Đăng ký" ? register() : login();
               }}
-              className="bg-[#0e562e] text-[#fff] h-[50px] rounded-lg w-full mx-auto mb-3"
+              className="bg-[#0e562e] text-[#fff] h-[50px] rounded-lg w-full mx-auto mb-3 mt-3"
             >
               Tiếp tục
             </button>

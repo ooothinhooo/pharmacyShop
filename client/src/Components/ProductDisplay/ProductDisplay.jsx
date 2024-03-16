@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { ShopContext } from "../../Context/ShopContext";
 
 export const ProductDisplay = (props) => {
-  const {addToCart} = useContext(ShopContext);
-  const {product} = props;
+  const { addToCart, getTotalCartAmountWithsale } = useContext(ShopContext);
+  const { product } = props;
   return (
     <div>
       <div className="productDetail">
@@ -53,13 +53,24 @@ export const ProductDisplay = (props) => {
                 </div>
 
                 <div className="bg-[#eee] py--[5px] px-6 h-[fit-content] rounded-xl mt-3">
-                  <div className="flex items-center">
-                    <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
-                      {product.price} đ
-                    </div>
+                  <div className="flex items-start flex-col">
+                    {product.sale > 0 ? (
+                      <>
+                        <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
+                          {getTotalCartAmountWithsale().toLocaleString('vi-VN')} đ
+                        </div>
+                        <div className="text-gray-400 line-through text-[18px] font-bold mr-5">
+                          {product.price} đ
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
+                        {product.price} đ
+                      </div>
+                    )}
                   </div>
-                  <div className="text-[11px] pb-4">
-                    <div>Giá đã bao gồm cả thuế</div>
+                  <div className="text-[12px] pb-4">
+                    <div>Giá chưa bao gồm cả thuế</div>
                     <div>
                       Phí vận chuyển và các chi phí khác (nếu có) sẽ được thể
                       hiện khi đặt hàng.
@@ -74,13 +85,13 @@ export const ProductDisplay = (props) => {
                         <td>{product.nametype}</td>
                       </tr>
                       <tr className="text-left">
-                        <th className="w-[30%] align-top">Quy cách đóng gói:</th>
+                        <th className="w-[30%] align-top">
+                          Quy cách đóng gói:
+                        </th>
                         <td>{product.packaging}</td>
                       </tr>
                       <tr className="text-left">
-                        <th className="w-[30%] align-top">
-                          cách sử dụng:
-                        </th>
+                        <th className="w-[30%] align-top">công dụng:</th>
                         <td>{product.usage}</td>
                       </tr>
                       <tr className="text-left">
@@ -95,12 +106,17 @@ export const ProductDisplay = (props) => {
                       <tr className="text-left">
                         <th className="w-[30%] align-top">Mô tả ngắn:</th>
                         <td>{product.description}</td>
-                      </tr> 
+                      </tr>
                     </tbody>
                   </table>
                 </div>
                 <div className="productInfo_body-right">
-                  <button onClick={() => {addToCart(product.id)}} className="add-cart">
+                  <button
+                    onClick={() => {
+                      addToCart(product.id);
+                    }}
+                    className="add-cart"
+                  >
                     <i className="fa-solid fa-cart-shopping mr-3"></i>Thêm giỏ
                     hàng
                   </button>
@@ -120,7 +136,7 @@ export const ProductDisplay = (props) => {
                 <div className="TypeOfShip_item bg-green-600 text-white p-2 rounded-lg">
                   Ahamove
                 </div>
-              </div>  
+              </div>
             </div>
           </div>
         </div>

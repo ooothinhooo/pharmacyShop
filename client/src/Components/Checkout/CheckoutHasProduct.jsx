@@ -29,7 +29,7 @@ export const CheckoutHasProduct = () => {
                     Giỏ hàng
                     <span className="infoLineCount ml-1 mr-2">
                       ({getTotalCartItems()} sản phẩm -{" "}
-                      {getTotalCartAmountWithsale()} đ)
+                      {getTotalCartAmountWithsale().toLocaleString("vi-VN")} đ)
                     </span>
                   </div>
                   <Link to="/cart" className="ml-2 text-[13px] text-green-500">
@@ -37,60 +37,63 @@ export const CheckoutHasProduct = () => {
                   </Link>
                 </div>
                 <div className="mt-3">
-                  <table className="w-[100%] text-left">
-                    <thead>
-                      <tr>
-                        <th className="text-left">Sản Phẩm</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Đơn giá</th>
-                        <th>Số lượng</th>
-                        <th>Thành tiền</th>
-                      </tr>
-                    </thead>
+                  <div className="grid grid-cols-[1fr_3.8fr_1fr_1fr_1fr] mb-5 gap-[10px] w-[100%] text-left">
+                    <p className="text-left">Sản Phẩm</p>
+                    <p>Tên sản phẩm</p>
+                    <p>Đơn giá</p>
+                    <p>Số lượng</p>
+                    <p>Thành tiền</p>
+                  </div>
+                  <div>
+                    <hr />
                     {all_products.map((e, i) => {
                       if (cartItems[e.id] > 0) {
                         return (
-                          <tbody key={i}>
-                            <tr>
-                              <td>
-                                <Link to={`/products/${e.id}`}>
-                                  <img
-                                    src={e.image}
-                                    alt=""
-                                    className="w-[72px]"
-                                  />
-                                </Link>
-                              </td>
-                              <td>
-                                <Link to={`/products/${e.id}`}>
-                                  <p className="text-left">{e.name}</p>
-                                </Link>
-                              </td>
-                              <td>
-                                <p>{e.price * (1 - e.sale / 100)}đ</p>
-                              </td>
-                              <td>
-                                <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
-                                  {cartItems[e.id]}
-                                </button>
-                              </td>
-                              <td>
-                                <p>{(e.price * (1 - e.sale/100)) * cartItems[e.id]}đ</p>
-                              </td>
-                            </tr>
-                          </tbody>
+                          <div
+                            className="w-full py-5 grid grid-cols-[1fr_3.8fr_1fr_1fr_1fr] gap-[10px] items-center"
+                            key={i}
+                          >
+                            <Link to={`/products/${e.id}`}>
+                              <img src={e.image} alt="" className="w-[72px]" />
+                            </Link>
+                            <Link to={`/products/${e.id}`}>
+                              <p className="product_name text-left">{e.name}</p>
+                            </Link>
+                            
+                            <p>
+                              {(e.price * (1 - e.sale / 100)).toLocaleString(
+                                "vi-VN"
+                              )}
+                              đ
+                            </p>
+                            
+                            <p>
+                              <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
+                                {cartItems[e.id]}
+                              </button>
+                            </p>
+
+                            <p>
+                              {(
+                                e.price *
+                                (1 - e.sale / 100) *
+                                cartItems[e.id]
+                              ).toLocaleString("vi-VN")}
+                              đ
+                            </p>
+                          </div>
                         );
                       }
                       return null;
                     })}
-                  </table>
+                  </div>
                 </div>
               </div>
             </div>
             {/* choose receive  product*/}
             <div className="box-border">
               <div className="py-4 bg-transparent">
-                <div className="receive_info-tab flex flex-row items-center justify-center gap-[46px] text-[#aaa]">
+                {/* <div className="receive_info-tab flex flex-row items-center justify-center gap-[46px] text-[#aaa]">
                   <div className="receive_info-tab--item flex items-center flex-row gap-[6px] font-medium leading-[120%] text-[16px] cursor-pointer">
                     <input type="radio" name="typeReceive" checked />
                     <i className="fa-solid fa-truck"></i>
@@ -102,7 +105,7 @@ export const CheckoutHasProduct = () => {
                     <i className="fa-solid fa-shop"></i>
                     Nhận tại nhà thuốc
                   </div>
-                </div>
+                </div> */}
                 <div className="bg-white rounded-lg border border-primaryColor mt-[10px] cursor-pointer">
                   <div className="py-4 px-5">
                     <div className="flex flex-row gap-3 items-center">
@@ -217,7 +220,7 @@ export const CheckoutHasProduct = () => {
                 <div>Tạm tính</div>
                 <div>
                   <b className="text-[24px]">
-                    {getTotalCartAmountWithsale()} đ
+                    {getTotalCartAmountWithsale().toLocaleString("vi-VN")} đ
                   </b>
                 </div>
               </div>
@@ -231,7 +234,7 @@ export const CheckoutHasProduct = () => {
                 </div>
                 <div>
                   <b className="text-[24px] text-red-500">
-                    {getTotalCartAmountWithVat()} đ
+                    {getTotalCartAmountWithVat().toLocaleString("vi-VN")}đ
                   </b>
                 </div>
               </div>

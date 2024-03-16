@@ -11,6 +11,7 @@ export const NavbarSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [prevSearchQuery, setPrevSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const handleSearch = async (query) => {
     if (!query.trim()) {
@@ -20,7 +21,7 @@ export const NavbarSearch = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:4000/search?query=${query}`
+        `http://localhost:4000/search?query=${query.trim()}`
       );
       const { products } = response.data;
       console.log(products);
@@ -90,7 +91,12 @@ export const NavbarSearch = () => {
           </Link>
         </div>
 
-        <div className="nav_search relative flex-1 w-[45%]">
+        <div
+          className="nav_search relative flex-1 w-[45%]"
+          onBlur={() => {
+            setShowSearchResults(false);
+          }}
+        >
           <form>
             <input
               type="text"
@@ -103,14 +109,17 @@ export const NavbarSearch = () => {
               onFocus={() => {
                 setSearchQuery(prevSearchQuery);
                 handleSearch(prevSearchQuery);
+                setShowSearchResults(true);
               }}
-              onBlur={() => setSearchResults([])}
               className="w-full h-[40px] p-[10px] rounded border-0 bg-[#fff]"
             />
             <i className="fa-solid fa-magnifying-glass absolute top-[10px] right-[10px] text-[#4cb551]"></i>
           </form>
-          {searchResults.length > 0 && (
-            <div className="absolute top-[60px] flex flex-col h-fit w-full z-10 bg-white box-border rounded-xl [box-shadow:0_0_16px_rgba(0,0,0,.2)] max-h-[70vh] overflow-y-auto">
+          {searchResults.length > 0 && showSearchResults && (
+            <div
+              onClick={() => setShowSearchResults(true)}
+              className="absolute top-[60px] flex flex-col h-fit w-full z-10 bg-white box-border rounded-xl [box-shadow:0_0_16px_rgba(0,0,0,.2)] max-h-[70vh] overflow-y-auto"
+            >
               <div className="flex-[30_1] p-3 box-border">
                 <h3>Kết quả tìm kiếm:</h3>
                 {searchResults.map((product) => (
@@ -146,7 +155,7 @@ export const NavbarSearch = () => {
                 Giỏ hàng
               </span>
               <strong className="text-[#ffbe65] ml-[5px] text-[11px] 1lg:text-[14px]">
-                {getTotalCartAmountWithsale()}đ
+                {getTotalCartAmountWithsale().toLocaleString('vi-VN')}đ
               </strong>
             </div>
           </div>

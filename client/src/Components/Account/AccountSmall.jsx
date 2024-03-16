@@ -6,7 +6,6 @@ import goldRank from "../Assets/gold-rank.png";
 import rewardPoint from "../Assets/reward_point.png";
 import { Link } from "react-router-dom";
 
-
 export const AccountSmall = () => {
   return (
     <div className="desktop_small flex-[0_0_420px]">
@@ -321,7 +320,7 @@ export const AccountSmall = () => {
               </li>
             </Link>
 
-            <Link
+            {/* <Link
               to="/account/test_reports"
               className="block no-underline border-b-[16px] border-[#ededed]"
             >
@@ -371,7 +370,7 @@ export const AccountSmall = () => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </Link> */}
 
             <Link to="/account/ranking_rules" className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">

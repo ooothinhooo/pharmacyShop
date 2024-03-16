@@ -114,7 +114,7 @@ const ShopContextProvider = (props) => {
         totalAmount += priceWithVat * cartItems[item];
       }
     }
-    return totalAmount.toFixed(0);
+    return totalAmount;
   };
 
   const getTotalCartItems = () => {

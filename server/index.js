@@ -52,7 +52,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
+const uploadAvatar = multer({ storage: storage });
 // Create upload endpoint for images
 
 app.use("/images", express.static("upload/images"));
@@ -63,6 +63,15 @@ app.post("/upload", upload.single("product"), (req, res) => {
     image_url: `http://localhost:${port}/images/${req.file.filename}`,
   });
 });
+
+// Create upload user endpoint for images
+
+app.post("/uploadAvatar", uploadAvatar.single("user"), (req, res) => {
+  res.json({
+    success: true,
+    image_url: `http://localhost:${port}/images/${req.file.filename}`,
+  });
+})
 
 // Create add product endpoint
 app.post("/addProduct", async (req, res) => {
@@ -143,6 +152,71 @@ app.get("/allProducts", async (req, res) => {
   }
 });
 
+// Create get all medicine types endpoint
+app.get("/allTypes", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM medicinetypes");
+    res.json({
+      success: true,
+      types: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all accounts endpoint
+app.get("/allAccounts", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM accounts");
+    res.json({
+      success: true,
+      accounts: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all customers endpoint
+app.get("/allCustomers", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM customers");
+    res.json({
+      success: true,
+      customers: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all order endpoint
+app.get("/allOrders", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM orders");
+    res.json({
+      success: true,
+      orders: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all suppliers endpoint
+app.get("/allSuppliers", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM suppliers");
+    res.json({
+      success: true,
+      suppliers: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create get search products endpoint
 app.get("/search", async (req, res) => {
   try {
@@ -150,7 +224,7 @@ app.get("/search", async (req, res) => {
 
     const result = await db.query(`
       SELECT * FROM medicines
-      WHERE name LIKE '%${query}%'
+      WHERE name ILIKE '%${query}%'
     `);
 
     res.json({
@@ -337,6 +411,24 @@ app.post("/getCart", fetchUser, async (req, res) => {
   ]);
   let cartData = userData.rows[0].carts;
   res.json(cartData);
+});
+
+// Create endpoint for update profile user
+app.post("/updateProfile", fetchUser, async (req, res) => {
+  let { image, name, gender, date, phone, email } = req.body;
+
+  try {
+    await db.query(
+      "UPDATE customers SET avatar = $1, namecus = $2, gender = $3, date = $4, phone = $5, email = $6 WHERE id_user = $7",
+      [image, name, gender, date, phone, email, req.user.id]
+    );
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // listen endpoint

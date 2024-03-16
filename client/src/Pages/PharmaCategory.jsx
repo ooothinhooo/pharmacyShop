@@ -26,13 +26,9 @@ export const PharmaCategory = (props) => {
       label: "Danh Mục",
       children: uniqueCategories.map((category, index) => {
         const slug = slugify(category, { lower: true });
-        const slug1 = slugify("Chăm sóc nhan sắc", { lower: true });
         return (
           <div key={index} className="py-[6px]">
             <Link to={`/${slug}`}>{category}</Link>
-            {console.log(category)}
-            {console.log(slug)}
-            {console.log(slug1)}
           </div>
         );
       }),
@@ -143,23 +139,6 @@ export const PharmaCategory = (props) => {
               </div>
 
               <div className="category_product-body mt-5 mb-10 relative z-10  grid gap-4 xl:grid-cols-4  md:grid-cols-3 md:gap-2 sm:gird-cols-2 ">
-                {/* {all_products
-                  .slice((current - 1) * pageSize, current * pageSize)
-                  .map((product, i) => {
-                    if (product.DanhMucChinh === props.category) {
-                      return (
-                        <Item
-                          key={i}
-                          MaSP={product.MaSP}
-                          HinhAnh={product.HinhAnh}
-                          TenThuoc={product.TenThuoc}
-                          Gia={product.Gia}
-                          GiaDeal={product.Gia}
-                        />
-                      );
-                    }
-                    return null;
-                  })} */}
                 {categoryCurrent
                   .slice((current - 1) * pageSize, current * pageSize)
                   .map((product, i) => {

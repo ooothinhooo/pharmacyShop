@@ -19,7 +19,6 @@ export const Account = () => {
     Coupon,
     Address,
     Prescriptions,
-    Test_reports,
     Ranking_rules,
     History_point,
   };

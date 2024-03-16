@@ -179,10 +179,6 @@ table thead th {
   @apply py-[14px] font-medium border-b border-[#d6dce8];
 }
 
-table tbody td {
-  @apply py-5
-}
-
 .product_item:hover {
   @apply border-2 border-primaryColor overflow-hidden
 }
@@ -250,6 +246,12 @@ table tbody td {
   @apply font-normal text-[13px] text-[#112950] mb-2 flex
 }
 
+.product_name {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 /* responsive */
 @media screen and (max-width: 1240px) {
