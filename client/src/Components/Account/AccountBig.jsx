@@ -4,10 +4,11 @@ import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import { ShopContext } from "../../Context/ShopContext";
 
-export const AccountBig = () => {
+export const AccountBig = (props) => {
   const [image, setImage] = useState(false);
-  const { userData } = useContext(ShopContext);
-  console.log(userData);
+  // const { userData } = useContext(ShopContext);
+  const { user } = props;
+  console.log(user);
   const [userDetail, setUserDetail] = useState({
     name: "khach hang",
     gender: "",
@@ -93,9 +94,9 @@ export const AccountBig = () => {
                           alt="upload"
                           className="object-cover object-center"
                         />
-                      ) : userData?.avatar ? (
+                      ) : user?.avatar ? (
                         <img
-                          src={userData?.avatar}
+                          src={user?.avatar}
                           alt="avatar"
                           className="object-cover object-center"
                         />
@@ -125,7 +126,7 @@ export const AccountBig = () => {
                     type="text"
                     name="name"
                     value={
-                      userData?.namecus ? userData.namecus : userDetail.name
+                      user?.namecus ? user.namecus : userDetail.name
                     }
                     onChange={changeHandle}
                     className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
@@ -147,8 +148,8 @@ export const AccountBig = () => {
                     value="Nam"
                     className="mr-2"
                     checked={
-                      userData?.gender
-                        ? userData.gender === "Nam"
+                      user?.gender
+                        ? user.gender === "Nam"
                         : userDetail.gender === "Nam"
                     }
                     onChange={changeHandle}
@@ -163,8 +164,8 @@ export const AccountBig = () => {
                     value="Nữ"
                     className="mr-2"
                     checked={
-                      userData?.gender
-                        ? userData.gender === "Nữ"
+                      user?.gender
+                        ? user.gender === "Nữ"
                         : userDetail.gender === "Nữ"
                     }
                     onChange={changeHandle}
@@ -179,8 +180,8 @@ export const AccountBig = () => {
                     value="Khác"
                     className="mr-2"
                     checked={
-                      userData?.gender
-                        ? userData.gender === "Khác"
+                      user?.gender
+                        ? user.gender === "Khác"
                         : userDetail.gender === "Khác"
                     }
                     onChange={changeHandle}
@@ -204,7 +205,7 @@ export const AccountBig = () => {
                         date: date.toLocaleDateString(),
                       })
                     }
-                    value={userData?.date ? userData.date : userDetail.date}
+                    value={user?.date ? user.date : userDetail.date}
                     className="w-full"
                     //   clearIcon
                   />
@@ -221,7 +222,7 @@ export const AccountBig = () => {
                 <input
                   type="text"
                   name="phone"
-                  value={userData?.phone ? userData.phone : userDetail.phone}
+                  value={user?.phone ? user.phone : userDetail.phone}
                   onChange={changeHandle}
                   className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                 />
@@ -238,7 +239,7 @@ export const AccountBig = () => {
                   <input
                     type="text"
                     name="email"
-                    value={userData?.email ? userData.email : userDetail.email}
+                    value={user?.email ? user.email : userDetail.email}
                     onChange={changeHandle}
                     className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                   />

@@ -1,20 +1,34 @@
-import React from "react";
+import React, { useContext } from "react";
 import avatar from "../Assets/user.png";
 import silverCard from "../Assets/silver-card.png";
 import silverRank from "../Assets/silver-rank.png";
 import goldRank from "../Assets/gold-rank.png";
 import rewardPoint from "../Assets/reward_point.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+// import { ShopContext } from "../../Context/ShopContext";
 
-export const AccountSmall = () => {
+export const AccountSmall = (props) => {
+  // const { userData } = useContext(ShopContext);
+  const { user } = props;
+  const navigate = useNavigate();
+  console.log(user);
+
+  const handleNavigate = (href) => {
+    navigate(href, { state: user });
+  };
+
   return (
     <div className="desktop_small flex-[0_0_420px]">
       <div className="account_menu min-w-[420px]">
         <div className="account_menu-head bg-[#c0c0c0] text-white rounded-t-xl mx-auto flex flex-col justify-between p-5 items-center">
           <div className="account_avatarAndName">
-            <img src={avatar} alt="avatar" className="mx-auto" />
+            <img
+              src={user?.avatar ? user.avatar : avatar}
+              alt="avatar"
+              className="mx-auto rounded-full w-[100px] h-[100px] object-cover object-center"
+            />
             <div className="text-[24px] font-bold leading-normal pt-[3px] pb-2 mb-[2px]">
-              Khách hàng
+              {user.namecus ? user.namecus : "Khách hàng"}
             </div>
           </div>
           <div
@@ -73,9 +87,13 @@ export const AccountSmall = () => {
             </div>
           </div>
         </div>
+
         <div className="account_menu-box bg-white pb-5 rounded-b-xl">
           <ul className="list-none m-0 p-0 overflow-hidden">
-            <Link to="/account/orders" className="block no-underline">
+            <div
+              onClick={() => handleNavigate("/account/orders")}
+              className="block no-underline"
+            >
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -122,9 +140,12 @@ export const AccountSmall = () => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
-            <Link to="/account/coupon" className="block no-underline">
+            <div
+              onClick={() => handleNavigate("/account/coupon")}
+              className="block no-underline"
+            >
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -171,9 +192,9 @@ export const AccountSmall = () => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
-            <Link to="/account" className="block no-underline">
+            <div onClick={() => handleNavigate("/account")} className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -220,9 +241,9 @@ export const AccountSmall = () => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
-            <Link to="/account/address" className="block no-underline">
+            <div onClick={() => handleNavigate("/account/address")} className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -269,7 +290,7 @@ export const AccountSmall = () => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
             <Link to="/account/prescriptions" className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">

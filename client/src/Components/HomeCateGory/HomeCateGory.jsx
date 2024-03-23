@@ -10,42 +10,20 @@ import TPCN from "../Assets/Thuc_Pham_Chuc_Nang.png";
 import MVB from "../Assets/Me_Be.png";
 import CSSD from "../Assets/Cham_Soc_Sac_Dep.png";
 import TBYT from "../Assets/TB_YT.png";
+import { useNavigate } from "react-router-dom";
 
 export const HomeCateGory = () => {
-  const onLinkMouseDown = (e) => {
-    e.preventDefault();
+  const navigate = useNavigate();
+
+  const handleNavagiteToUserProfile = (href) => {
+    navigate(href);
   };
-
-  function SampleNextArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "none", background: "red" }}
-        onClick={onClick}
-      />
-    );
-  }
-  
-  function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "none", background: "green" }}
-        onClick={onClick}
-      />
-    );
-  }
-
   var settings = {
     dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 8,
     slidesToScroll: 8,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
     initialSlide: 0,
     responsive: [
       {
@@ -95,57 +73,57 @@ export const HomeCateGory = () => {
             <Slider {...settings}>
               <div>
                 <div>
-                  <a href="/duoc-pham" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile('/duoc-pham')}>
                     <img
                       src={DP}
                       alt="Dược Phẩm"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Dược Phẩm</p>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <a href="/cham-soc-suc-khoe" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile('/cham-soc-suc-khoe')}>
                     <img
                       src={CSSK}
                       alt="Chăm sóc sữc khoẻ"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Chăm sóc sữc khoẻ</p>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <a href="/cham-soc-ca-nhan" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile("/cham-soc-ca-nhan")}>
                     <img
                       src={CSCN}
                       alt="Chăm sóc cá nhân"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Chăm sóc cá nhân</p>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <a href="/san-pham-tien-loi" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile("/san-pham-tien-loi")}>
                     <img
                       src={SPTL}
                       alt="Sản phẩm tiện lợi"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Sản phẩm tiện lợi</p>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
                   <a
                     href={"/thuc-pham-chuc-nang"}
-                    onMouseDown={onLinkMouseDown}
+                  
                   >
                     <img
                       src={TPCN}
@@ -160,38 +138,38 @@ export const HomeCateGory = () => {
               </div>
               <div>
                 <div>
-                  <a href="/Me-va-Be" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile("/Me-va-Be")}>
                     <img
                       src={MVB}
                       alt="Mẹ và Bé"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Mẹ và Bé</p>
-                  </a>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <a href="/cham-soc-sac-dep" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile("/cham-soc-nhan-sac")}>
                     <img
                       src={CSSD}
                       alt="Chăm sóc sắc đẹp"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
-                    <p className="text-[15px] text-center">Chăm sóc sắc đẹp</p>
-                  </a>
+                    <p className="text-[15px] text-center">Chăm sóc nhan sắc</p>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <a href="/Thiet-bi-y-te" onMouseDown={onLinkMouseDown}>
+                  <div onClick={() => handleNavagiteToUserProfile("/Thiet-bi-y-te")}>
                     <img
                       src={TBYT}
                       alt="Thiết bị Y tế"
                       className="mb-[20px] max-w-[120px] mx-auto"
                     />
                     <p className="text-[15px] text-center">Thiết bị Y tế</p>
-                  </a>
+                  </div>
                 </div>
               </div>
             </Slider>

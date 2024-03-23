@@ -431,6 +431,25 @@ app.post("/updateProfile", fetchUser, async (req, res) => {
   }
 });
 
+// Create endpoint for update address user
+app.post("/updateAddress", fetchUser, async (req, res) => {
+  let { street, ward, district, province } = req.body;
+  const address = `${street}, ${ward}, ${district}, ${province}`;
+  console.log(address);
+  try {
+    await db.query(
+      "UPDATE customers SET address = $1 WHERE id_user = $2",
+      [address, req.user.id]
+    );
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // listen endpoint
 app.listen(port, (e) => {
   if (!e) {

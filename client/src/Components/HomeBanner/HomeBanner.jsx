@@ -1,10 +1,17 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import img1 from "../Assets/boncachimage1.png";
 import img2 from "../Assets/d2-5.png";
 import img3 from "../Assets/d2-5.png";
+import { ShopContext } from "../../Context/ShopContext";
 
 export const HomeBanner = () => {
+  const { userData } = useContext(ShopContext);
+
+  const navigate = useNavigate();
+  const handleNavigateTo = () => {
+    navigate("/account/prescriptions", { state: userData });
+  };
   return (
     <div className="mt-8">
       <div className="bg-[#f2f6fe]">
@@ -19,13 +26,13 @@ export const HomeBanner = () => {
               <div className="banner_cta-title text-[26px] text-center font-bold mb-[24px] text-[#187733] [text-shadow:0px_5px_20px_rgba(81,67,21,0.5)]">
                 Mua thuốc thuận tiện hơn tại Pharma Shop
               </div>
-              <Link to={"/account/prescriptions"}>
+              <div onClick={() => handleNavigateTo()}>
                 <div className="flex">
                   <button className="banner_cta-btn bg-[#187733] text-white px-6 py-2 rounded-md hover:opacity-80 [transition:all_0.25s_linear]">
                     Đặt thuốc ngay
                   </button>
                 </div>
-              </Link>
+              </div>
               <div className="banner_cta-group 1lg:block text-[14px] mt-4">
                 <Link
                   to={"https://www.facebook.com/thientan2528/"}
@@ -54,19 +61,19 @@ export const HomeBanner = () => {
               <div className="xl:block divider"></div>
 
               <div className="banner_footer-item flex items-center">
-              <i className="fa-solid fa-capsules text-[#19a305]"></i>
+                <i className="fa-solid fa-capsules text-[#19a305]"></i>
                 <span className="ml-2">Thuốc tốt giá rẻ</span>
               </div>
               <div className="xl:block divider"></div>
 
               <div className="banner_footer-item flex items-center">
-              <i className="fa-solid fa-file-invoice-dollar text-[#19a305]"></i>
+                <i className="fa-solid fa-file-invoice-dollar text-[#19a305]"></i>
                 <span className="ml-2">100% thuốc chính hãng</span>
               </div>
               <div className="xl:block divider"></div>
 
               <div className="banner_footer-item flex items-center">
-              <i className="fa-solid fa-heart text-[#19a305]"></i>
+                <i className="fa-solid fa-heart text-[#19a305]"></i>
                 <span className="ml-2">Đủ thuốc đúng chuẩn</span>
               </div>
             </div>

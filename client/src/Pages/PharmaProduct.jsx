@@ -1,18 +1,15 @@
-import React, { useContext } from 'react';
-import { ShopContext } from '../Context/ShopContext';
-import { useParams } from 'react-router-dom';
-import { ProductDisplay } from '../Components/ProductDisplay/ProductDisplay';
-import { Breadcrum } from '../Components/Breadcrum/Breadcrum';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import { ProductDisplay } from "../Components/ProductDisplay/ProductDisplay";
+import { Breadcrum } from "../Components/Breadcrum/Breadcrum";
 
 export const PharmaProduct = () => {
-  const { all_products } = useContext(ShopContext);
-  const { productId } = useParams();
-  const product = all_products.find((e) => e.id === Number(productId));
+  const { state } = useLocation();
 
   return (
     <div>
-      <Breadcrum product={product} />
-      <ProductDisplay product={product} />
+      <Breadcrum product={state} />
+      <ProductDisplay product={state} />
     </div>
-  )
-}
+  );
+};

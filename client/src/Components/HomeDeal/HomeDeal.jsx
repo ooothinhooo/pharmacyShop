@@ -6,7 +6,6 @@ import { ItemDeal } from "../ItemDeal/ItemDeal";
 import { ShopContext } from "../../Context/ShopContext";
 export const HomeDeal = () => {
   const { all_products } = useContext(ShopContext);
-
   var settings = {
     dots: true,
     infinite: true,

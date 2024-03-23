@@ -14,7 +14,7 @@ const getDefaultCart = () => {
 };
 
 const ShopContextProvider = (props) => {
-  const [all_products, setAll_Products] = useState([])
+  const [all_products, setAll_Products] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
   const [stateLogin, setStateLogin] = useState("Đăng ký");
   const [userData, setUserData] = useState(null);
@@ -22,7 +22,7 @@ const ShopContextProvider = (props) => {
   useEffect(() => {
     fetch("http://localhost:4000/allProducts")
       .then((response) => response.json())
-      .then((data) => setAll_Products(data.products))
+      .then((data) => setAll_Products(data.products));
 
     if (localStorage.getItem("auth-token")) {
       fetch("http://localhost:4000/getCart", {

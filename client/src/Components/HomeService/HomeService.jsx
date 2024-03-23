@@ -8,7 +8,7 @@ export const HomeService = () => {
           <div className="container w-full mx-auto px-[15px]">
             <div className="our_service-box flex flex-wrap justify-between py-[80px]">
               <div className="our_service-col w-[25%] max-w-[280px]">
-                <a href="/#" className="no-underline">
+                <div className="no-underline">
                   <div className="our_service-item flex flex-wrap justify-between items-center">
                     <div className="our_service-icon">
                       <i className="fa-solid fa-truck-fast text-[40px] text-[#187733]"></i>
@@ -24,11 +24,11 @@ export const HomeService = () => {
                       </p>
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
 
               <div className="our_service-col w-[25%] max-w-[280px]">
-                <a href="/#" className="no-underline">
+                <div className="no-underline">
                   <div className="our_service-item flex flex-wrap justify-between items-center">
                     <div className="our_service-icon">
                       <i className="fa-solid fa-file-invoice-dollar text-[40px] text-[#187733]"></i>
@@ -42,11 +42,11 @@ export const HomeService = () => {
                       </p>
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
 
               <div className="our_service-col w-[25%] max-w-[280px]">
-                <a href="/#" className="no-underline">
+                <div className="no-underline">
                   <div className="our_service-item flex flex-wrap justify-between items-center">
                     <div className="our_service-icon">
                       <i className="fa-solid fa-phone-volume text-[40px] text-[#187733]"></i>
@@ -60,11 +60,11 @@ export const HomeService = () => {
                       </p>
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
 
               <div className="our_service-col w-[25%] max-w-[280px]">
-                <a href="/#" className="no-underline">
+                <div className="no-underline">
                   <div className="our_service-item flex flex-wrap justify-between items-center">
                     <div className="our_service-icon">
                       <i className="fa-solid fa-mobile-screen-button text-[#187733] text-[40px]"></i>
@@ -78,12 +78,12 @@ export const HomeService = () => {
                       </p>
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
             </div>
 
             <form
-              action=""
+              action="#"
               className="our_service-register flex justify-center items-center pb-[50px]"
             >
               <p>

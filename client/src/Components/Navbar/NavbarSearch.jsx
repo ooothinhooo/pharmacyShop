@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import logo from "../Assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginSignup } from "../../Pages/LoginSignup";
 import { ShopContext } from "../../Context/ShopContext";
 import { Dropdown } from "antd";
@@ -12,6 +12,11 @@ export const NavbarSearch = () => {
   const [prevSearchQuery, setPrevSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigateToUserData = (href) => {
+    navigate(href, { state: userData });
+  };
 
   const handleSearch = async (query) => {
     if (!query.trim()) {
@@ -55,11 +60,19 @@ export const NavbarSearch = () => {
   const items = [
     {
       key: "1",
-      label: <Link to={"/account/orders"}>Lịch sử đơn hàng</Link>,
+      label: (
+        <div onClick={() => handleNavigateToUserData("/account/orders")}>
+          Lịch sử đơn hàng
+        </div>
+      ),
     },
     {
       key: "2",
-      label: <Link to={"/account"}>Chỉnh sửa thông tin cá nhân</Link>,
+      label: (
+        <div onClick={() => handleNavigateToUserData("/account")}>
+          Chỉnh sửa thông tin cá nhân
+        </div>
+      ),
     },
     {
       key: "3",
@@ -76,8 +89,6 @@ export const NavbarSearch = () => {
     },
   ];
 
-  console.log(userData);
-
   return (
     <div>
       <div className="navbar flex-wrap flex justify-between items-center 1lg:gap-[15px] relative pt-[12px] pb-[10px]">
@@ -91,12 +102,7 @@ export const NavbarSearch = () => {
           </Link>
         </div>
 
-        <div
-          className="nav_search relative flex-1 w-[45%]"
-          onBlur={() => {
-            setShowSearchResults(false);
-          }}
-        >
+        <div className="nav_search relative flex-1 w-[45%]">
           <form>
             <input
               type="text"
@@ -123,10 +129,12 @@ export const NavbarSearch = () => {
               <div className="flex-[30_1] p-3 box-border">
                 <h3>Kết quả tìm kiếm:</h3>
                 {searchResults.map((product) => (
-                  <Link
-                    to={`/products/${product.id}`}
+                  <div
+                    onClick={() => {
+                      navigate(`/products/${product.id}`, { state: product });
+                      setSearchResults([]);
+                    }}
                     key={product.id}
-                    // onClick={() => setSearchResults([])}
                     className="flex items-center p-[10px] rounded-lg text-[15px]"
                   >
                     <img
@@ -135,7 +143,7 @@ export const NavbarSearch = () => {
                       className="w-[80px] mr-4"
                     />
                     <span>{product.name}</span>
-                  </Link>
+                  </div>
                 ))}
               </div>
             </div>
@@ -143,7 +151,7 @@ export const NavbarSearch = () => {
         </div>
 
         <Link to="/cart">
-          <div className="justify-around bg-[#0e562e] rounded px-[10px] py-[2px] mx-auto flex items-center h-[42px] max-w-[140px] box-border cursor-pointer nav_cart ">
+          <div className="justify-around bg-[#0e562e] rounded px-[10px] py-[2px] mx-auto flex items-center h-[42px] max-w-[140px] box-border cursor-pointer nav_cart">
             <div className="relative mr-[8px] text-center">
               <i className="fa-solid fa-cart-shopping text-[#fff] text-[20px] nav_cart-icon"></i>
               <span className="absolute bottom-0 min-w-[15px] bg-white rounded-full text-[9px] left-[14px] font-bold text-[#4cb551]">
@@ -155,7 +163,7 @@ export const NavbarSearch = () => {
                 Giỏ hàng
               </span>
               <strong className="text-[#ffbe65] ml-[5px] text-[11px] 1lg:text-[14px]">
-                {getTotalCartAmountWithsale().toLocaleString('vi-VN')}đ
+                {getTotalCartAmountWithsale().toLocaleString("vi-VN")}đ
               </strong>
             </div>
           </div>
@@ -223,10 +231,13 @@ export const NavbarSearch = () => {
                 pointAtCenter: true,
               }}
             >
-              <Link to={"/account"} className="flex items-center">
+              <div
+                onClick={() => handleNavigateToUserData("/account")}
+                className="flex items-center"
+              >
                 <h1>{userData?.namecus}</h1>
                 <i className="fa-regular fa-user pl-3"></i>
-              </Link>
+              </div>
             </Dropdown>
           </div>
         ) : (
