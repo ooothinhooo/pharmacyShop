@@ -5,7 +5,6 @@ import { Breadcrum } from "../Components/Breadcrum/Breadcrum";
 
 export const PharmaProduct = () => {
   const { state } = useLocation();
-
   return (
     <div>
       <Breadcrum product={state} />

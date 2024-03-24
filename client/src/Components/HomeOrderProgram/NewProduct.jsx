@@ -25,6 +25,8 @@ const NewProduct = () => {
     setSortedProducts(sorted.slice(0, 20)); // Take the top 20 newest products
   }, [all_products]);
 
+  console.log(sortedProducts);
+
   function SampleNextArrow(props) {
     const { className, style, onClick } = props;
 
@@ -105,7 +107,7 @@ const NewProduct = () => {
                   image={product.image}
                   name={product.name}
                   price={product.price}
-                  sale={product.sale}
+                  sale={product.price * (1 - product.sale / 100)}
                 />
               );
             })}

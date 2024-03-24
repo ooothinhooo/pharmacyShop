@@ -1,21 +1,56 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-import { ShopContext } from "../../Context/ShopContext";
+// import { ShopContext } from "../../Context/ShopContext";
 
 export const AccountBig = (props) => {
-  const [image, setImage] = useState(false);
-  // const { userData } = useContext(ShopContext);
+  // const { userData } = useContext(ShopContext)
   const { user } = props;
   console.log(user);
-  const [userDetail, setUserDetail] = useState({
-    name: "khach hang",
-    gender: "",
-    date: new Date().toLocaleDateString(),
-    phone: "",
-    email: "",
+
+  const [image, setImage] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+
+  const [userDetail, setUserDetail] = useState(() => {
+    if (user) {
+      return {
+        name: user.namecus || "",
+        gender: user.gender || "",
+        date: user.date || new Date().toLocaleDateString(),
+        phone: user.phone || "",
+        email: user.email || "",
+        avatar: user.avatar || "",
+      };
+    }
+    return {
+      name: "",
+      gender: "",
+      date: new Date().toLocaleDateString(),
+      phone: "",
+      email: "",
+      avatar: "",
+    };
   });
+
+  useEffect(() => {
+    const initialUserDetail = {
+      name: user.namecus || "",
+      gender: user.gender || "",
+      date: user.date || new Date().toLocaleDateString(),
+      phone: user.phone || "",
+      email: user.email || "",
+    };
+
+    setHasChanges(
+      Object.keys(userDetail).some(
+        (key) => userDetail[key] !== initialUserDetail[key]
+      )
+    );
+  }, [userDetail, user]);
+
+  // }, [user]);
 
   const imageHandle = (e) => {
     setImage(e.target.files[0]);
@@ -28,44 +63,50 @@ export const AccountBig = (props) => {
 
   const UpdateProfile = async () => {
     console.log(userDetail);
-
-    let responseData;
+  
+    let responseData = {};
     let user = userDetail;
-    let formData = new FormData();
-    formData.append("user", image);
-
-    await fetch("http://localhost:4000/uploadAvatar", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        responseData = data;
-      });
-
-    if (responseData.success) {
-      user.image = responseData.image_url;
-      console.log(user);
-
-      await fetch("http://localhost:4000/updateProfile", {
+  
+    // Kiểm tra nếu có ảnh mới
+    if (image) {
+      let formData = new FormData();
+      formData.append("user", image);
+  
+      await fetch("http://localhost:4000/uploadAvatar", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": localStorage.getItem("auth-token"),
         },
-        body: JSON.stringify(user),
+        body: formData,
       })
         .then((resp) => resp.json())
         .then((data) => {
-          data.success
-            ? alert("Cập nhật thông tin thành công")
-            : alert("Cập nhật thông tin thất bại");
+          responseData = data;
         });
+  
+      if (responseData.success) {
+        user.image = responseData.image_url;
+      }
     }
+  
+    await fetch("http://localhost:4000/updateProfile", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("auth-token"),
+      },
+      body: JSON.stringify(user),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Cập nhật thông tin thành công");
+          window.location.href = "/";
+        } else {
+          alert("Cập nhật thông tin thất bại");
+        }
+      });
   };
 
   return (
@@ -94,9 +135,9 @@ export const AccountBig = (props) => {
                           alt="upload"
                           className="object-cover object-center"
                         />
-                      ) : user?.avatar ? (
+                      ) : userDetail.avatar ? (
                         <img
-                          src={user?.avatar}
+                          src={userDetail.avatar}
                           alt="avatar"
                           className="object-cover object-center"
                         />
@@ -125,9 +166,7 @@ export const AccountBig = (props) => {
                   <input
                     type="text"
                     name="name"
-                    value={
-                      user?.namecus ? user.namecus : userDetail.name
-                    }
+                    value={userDetail.name}
                     onChange={changeHandle}
                     className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                   />
@@ -147,11 +186,7 @@ export const AccountBig = (props) => {
                     id="nam"
                     value="Nam"
                     className="mr-2"
-                    checked={
-                      user?.gender
-                        ? user.gender === "Nam"
-                        : userDetail.gender === "Nam"
-                    }
+                    checked={userDetail.gender === "Nam"}
                     onChange={changeHandle}
                   />
                   <label htmlFor="nam">Nam</label>
@@ -163,11 +198,7 @@ export const AccountBig = (props) => {
                     id="nu"
                     value="Nữ"
                     className="mr-2"
-                    checked={
-                      user?.gender
-                        ? user.gender === "Nữ"
-                        : userDetail.gender === "Nữ"
-                    }
+                    checked={userDetail.gender === "Nữ"}
                     onChange={changeHandle}
                   />
                   <label htmlFor="nu">Nữ</label>
@@ -179,11 +210,7 @@ export const AccountBig = (props) => {
                     id="khac"
                     value="Khác"
                     className="mr-2"
-                    checked={
-                      user?.gender
-                        ? user.gender === "Khác"
-                        : userDetail.gender === "Khác"
-                    }
+                    checked={userDetail.gender === "Khác"}
                     onChange={changeHandle}
                   />
                   <label htmlFor="khac">Khác</label>
@@ -205,7 +232,7 @@ export const AccountBig = (props) => {
                         date: date.toLocaleDateString(),
                       })
                     }
-                    value={user?.date ? user.date : userDetail.date}
+                    value={userDetail.date}
                     className="w-full"
                     //   clearIcon
                   />
@@ -222,7 +249,7 @@ export const AccountBig = (props) => {
                 <input
                   type="text"
                   name="phone"
-                  value={user?.phone ? user.phone : userDetail.phone}
+                  value={userDetail.phone}
                   onChange={changeHandle}
                   className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                 />
@@ -239,7 +266,7 @@ export const AccountBig = (props) => {
                   <input
                     type="text"
                     name="email"
-                    value={user?.email ? user.email : userDetail.email}
+                    value={userDetail.email}
                     onChange={changeHandle}
                     className="outline-none box-border bg-transparent py-[9px] border-b border-[#e5e5e5] text-[15px] w-full"
                   />
@@ -248,6 +275,7 @@ export const AccountBig = (props) => {
             </div>
             <button
               onClick={() => UpdateProfile()}
+              disabled={!hasChanges}
               className="border-none flex items-center rounded-xl w-full leading-[54px] text-[17px] text-center font-bold justify-center !bg-primaryColor text-white mt-5 mb-10"
             >
               Lưu

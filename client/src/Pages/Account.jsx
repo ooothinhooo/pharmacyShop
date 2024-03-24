@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AccountSmall } from "../Components/Account/AccountSmall";
 import { AccountBig } from "../Components/Account/AccountBig";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { capitalize } from "lodash";
 import { Orders } from "../Components/Account/Orders";
 import { Coupon } from "../Components/Account/Coupon";
@@ -10,7 +10,7 @@ import { Prescriptions } from "../Components/Account/Prescriptions";
 // import { Test_reports } from "../Components/Account/Test_reports";
 import { Ranking_rules } from "../Components/Account/Ranking_rules";
 import { History_point } from "../Components/Account/History_point";
-import { ShopContext } from "../Context/ShopContext";
+// import { ShopContext } from "../Context/ShopContext";
 
 export const Account = () => {
   // const { userData } = useContext(ShopContext);

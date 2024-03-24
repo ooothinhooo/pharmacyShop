@@ -71,7 +71,7 @@ app.post("/uploadAvatar", uploadAvatar.single("user"), (req, res) => {
     success: true,
     image_url: `http://localhost:${port}/images/${req.file.filename}`,
   });
-})
+});
 
 // Create add product endpoint
 app.post("/addProduct", async (req, res) => {
@@ -417,6 +417,16 @@ app.post("/getCart", fetchUser, async (req, res) => {
 app.post("/updateProfile", fetchUser, async (req, res) => {
   let { image, name, gender, date, phone, email } = req.body;
 
+  const currentUser = await db.query(
+    "SELECT * FROM customers WHERE id_user = $1",
+    [req.user.id]
+  );
+
+  // if have not image then use old url avatar
+  if (!image) {
+    image = currentUser.rows[0].avatar;
+  }
+
   try {
     await db.query(
       "UPDATE customers SET avatar = $1, namecus = $2, gender = $3, date = $4, phone = $5, email = $6 WHERE id_user = $7",
@@ -437,10 +447,10 @@ app.post("/updateAddress", fetchUser, async (req, res) => {
   const address = `${street}, ${ward}, ${district}, ${province}`;
   console.log(address);
   try {
-    await db.query(
-      "UPDATE customers SET address = $1 WHERE id_user = $2",
-      [address, req.user.id]
-    );
+    await db.query("UPDATE customers SET address = $1 WHERE id_user = $2", [
+      address,
+      req.user.id,
+    ]);
 
     res.json({
       success: true,

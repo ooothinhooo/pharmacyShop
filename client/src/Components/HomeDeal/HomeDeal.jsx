@@ -6,6 +6,7 @@ import { ItemDeal } from "../ItemDeal/ItemDeal";
 import { ShopContext } from "../../Context/ShopContext";
 export const HomeDeal = () => {
   const { all_products } = useContext(ShopContext);
+  
   var settings = {
     dots: true,
     infinite: true,
@@ -52,7 +53,7 @@ export const HomeDeal = () => {
 
           <div className="deal-list slider-container">
             <Slider {...settings}>
-              {all_products.map((product, i) => {
+              {all_products.map((product, i) => { 
                 if (product.sale > 0) {
                   return (
                     <ItemDeal

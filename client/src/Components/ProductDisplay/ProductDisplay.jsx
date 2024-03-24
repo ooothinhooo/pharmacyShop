@@ -57,15 +57,15 @@ export const ProductDisplay = (props) => {
                     {product.sale > 0 ? (
                       <>
                         <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
-                          {getTotalCartAmountWithsale().toLocaleString('vi-VN')} đ
+                          {(product.price * (1 - product.sale / 100)).toLocaleString("vi-VN")}đ
                         </div>
                         <div className="text-gray-400 line-through text-[18px] font-bold mr-5">
-                          {product.price} đ
+                          {Number(product.price).toLocaleString("vi-VN")}đ
                         </div>
                       </>
                     ) : (
                       <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
-                        {product.price} đ
+                        {Number(product.price).toLocaleString("vi-VN")}đ
                       </div>
                     )}
                   </div>
