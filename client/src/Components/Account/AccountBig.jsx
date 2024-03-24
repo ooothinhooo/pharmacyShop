@@ -6,22 +6,22 @@ import "react-calendar/dist/Calendar.css";
 
 export const AccountBig = (props) => {
   // const { userData } = useContext(ShopContext)
-  const { user } = props;
-  console.log(user);
+  const { userData } = props;
+  // console.log(user);
 
   const [image, setImage] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
 
   const [userDetail, setUserDetail] = useState(() => {
-    if (user) {
+    if (userData) {
       return {
-        name: user.namecus || "",
-        gender: user.gender || "",
-        date: user.date || new Date().toLocaleDateString(),
-        phone: user.phone || "",
-        email: user.email || "",
-        avatar: user.avatar || "",
+        name: userData.namecus || "",
+        gender: userData.gender || "",
+        date: userData.date || new Date().toLocaleDateString(),
+        phone: userData.phone || "",
+        email: userData.email || "",
+        avatar: userData.avatar || "",
       };
     }
     return {
@@ -36,11 +36,11 @@ export const AccountBig = (props) => {
 
   useEffect(() => {
     const initialUserDetail = {
-      name: user.namecus || "",
-      gender: user.gender || "",
-      date: user.date || new Date().toLocaleDateString(),
-      phone: user.phone || "",
-      email: user.email || "",
+      name: userData.namecus || "",
+      gender: userData.gender || "",
+      date: userData.date || new Date().toLocaleDateString(),
+      phone: userData.phone || "",
+      email: userData.email || "",
     };
 
     setHasChanges(
@@ -48,7 +48,7 @@ export const AccountBig = (props) => {
         (key) => userDetail[key] !== initialUserDetail[key]
       )
     );
-  }, [userDetail, user]);
+  }, [userDetail, userData]);
 
   // }, [user]);
 
@@ -62,7 +62,7 @@ export const AccountBig = (props) => {
   };
 
   const UpdateProfile = async () => {
-    console.log(userDetail);
+    // console.log(userDetail);
   
     let responseData = {};
     let user = userDetail;

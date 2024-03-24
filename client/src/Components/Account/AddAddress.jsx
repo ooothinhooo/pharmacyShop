@@ -1,25 +1,40 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const AddAddress = ({ onClose, user }) => {
+const AddAddress = ({ onClose, fetchAddress }) => {
   const [address, setAddress] = useState({
-    name: user.namecus,
-    phone: user.phone,
+    name: "",
+    phone: "",
     province: "",
     district: "",
     ward: "",
     street: "",
+    isDefaultAddress: false,
   });
 
+  const [defaultAddress, setDefaultAddress] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    setDefaultAddress(e.target.checked); // Cập nhật giá trị của state isDefault khi checkbox thay đổi
+  };
+
+  useEffect(() => {
+    setAddress((prevAddress) => ({
+      ...prevAddress,
+      isDefaultAddress: defaultAddress,
+    }));
+  }, [defaultAddress]);
+
   const handleAddressChange = (e) => {
-    console.log(e.target.name);
-    console.log(e.target.value);
+    // console.log(e.target.name);
+    // console.log(e.target.value);
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
   const UpdateAddress = async () => {
     console.log(address);
 
-    await fetch("http://localhost:4000/updateAddress", {
+    await fetch("http://localhost:4000/AddAddress", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -30,9 +45,13 @@ const AddAddress = ({ onClose, user }) => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        data.success
-          ? alert("Thêm địa chỉ thành công")
-          : alert("Thêm địa chỉ thất bại");
+        if (data.success) {
+          alert("Thêm địa chỉ thành công");
+          fetchAddress();
+          onClose();
+        } else {
+          alert("Thêm địa chỉ thất bại");
+        }
       });
   };
   return (
@@ -135,7 +154,11 @@ const AddAddress = ({ onClose, user }) => {
           </div>
 
           <div className="mt-4">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={defaultAddress}
+              onChange={handleCheckboxChange}
+            />
             <span className="pl-1">Đặt làm địa chỉ mặt định</span>
           </div>
         </div>

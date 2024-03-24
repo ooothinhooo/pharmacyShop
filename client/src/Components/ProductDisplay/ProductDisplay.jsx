@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { ShopContext } from "../../Context/ShopContext";
 
 export const ProductDisplay = (props) => {
-  const { addToCart, getTotalCartAmountWithsale } = useContext(ShopContext);
+  const { addToCart } = useContext(ShopContext);
   const { product } = props;
   return (
     <div>

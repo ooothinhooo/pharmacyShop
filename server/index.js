@@ -442,18 +442,72 @@ app.post("/updateProfile", fetchUser, async (req, res) => {
 });
 
 // Create endpoint for update address user
-app.post("/updateAddress", fetchUser, async (req, res) => {
-  let { street, ward, district, province } = req.body;
+app.post("/AddAddress", fetchUser, async (req, res) => {
+  let { name, phone, street, ward, district, province, isDefaultAddress } =
+    req.body;
   const address = `${street}, ${ward}, ${district}, ${province}`;
   console.log(address);
+  console.log(isDefaultAddress);
   try {
-    await db.query("UPDATE customers SET address = $1 WHERE id_user = $2", [
-      address,
-      req.user.id,
-    ]);
+    // Check if the user already has a default address
+    const existingDefaultAddress = await db.query(
+      "SELECT * FROM addresses_user WHERE default_address = '1' AND ida = $1",
+      [req.user.id]
+    );
+
+    // If the user already has a default address, update the old default address to non-default
+    if (existingDefaultAddress.rows.length > 0) {
+      await db.query(
+        "UPDATE addresses_user SET default_address = '0' WHERE idau = $1",
+        [existingDefaultAddress.rows[0].idau]
+      );
+    }
+
+    // Add a new address with the corresponding default_address value
+    if (isDefaultAddress) {
+      await db.query(
+        "INSERT INTO addresses_user (name_user, phone, address, default_address, ida) VALUES ($1, $2, $3, '1', $4)",
+        [name, phone, address, req.user.id]
+      );
+    } else {
+      await db.query(
+        "INSERT INTO addresses_user (name_user, phone, address, ida) VALUES ($1, $2, $3, $4)",
+        [name, phone, address, req.user.id]
+      );
+    }
 
     res.json({
       success: true,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all addresses endpoint
+app.get("/allAddresses", fetchUser, async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM addresses_user WHERE ida = $1",
+      [req.user.id]
+    );
+    res.json({
+      success: true,
+      addresses: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create delete Address endpoint
+app.post("/deleteAddress", async (req, res) => {
+  const { id } = req.body;
+  try {
+    db.query("DELETE FROM addresses_user WHERE idau = $1", [id]);
+    res.json({
+      success: true,
+      message: "Address deleted",
     });
   } catch (err) {
     console.log(err);

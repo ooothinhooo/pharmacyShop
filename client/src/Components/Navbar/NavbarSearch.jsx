@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import logo from "../Assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,11 +12,40 @@ export const NavbarSearch = () => {
   const [prevSearchQuery, setPrevSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [addressData, setAddressData] = useState([]);
   const navigate = useNavigate();
 
+  const {
+    getTotalCartItems,
+    getTotalCartAmountWithsale,
+    setStateLogin,
+    userData,
+  } = useContext(ShopContext);
+
   const handleNavigateToUserData = (href) => {
-    navigate(href, { state: userData });
+    navigate(href, { state: { addressData, userData  } });
   };
+
+  // console.log(userData);
+  // console.log(addressData);
+
+  useEffect(() => {
+    const getAddress = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/allAddresses", {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        });
+        const { addresses } = response.data;
+        setAddressData(addresses);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getAddress();
+  }, []);
 
   const handleSearch = async (query) => {
     if (!query.trim()) {
@@ -40,13 +69,6 @@ export const NavbarSearch = () => {
   const [show, setShow] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
-
-  const {
-    getTotalCartItems,
-    getTotalCartAmountWithsale,
-    setStateLogin,
-    userData,
-  } = useContext(ShopContext);
 
   const showInfoContact = () => {
     setShow(true);

@@ -4,17 +4,17 @@ import silverCard from "../Assets/silver-card.png";
 import silverRank from "../Assets/silver-rank.png";
 import goldRank from "../Assets/gold-rank.png";
 import rewardPoint from "../Assets/reward_point.png";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { ShopContext } from "../../Context/ShopContext";
 
 export const AccountSmall = (props) => {
   // const { userData } = useContext(ShopContext);
-  const { user } = props;
+  const { userData, addressData } = props;
   const navigate = useNavigate();
-  console.log(user);
+  console.log(userData);
 
   const handleNavigate = (href) => {
-    navigate(href, { state: user });
+    navigate(href, { state: { userData, addressData } });
   };
 
   return (
@@ -23,12 +23,12 @@ export const AccountSmall = (props) => {
         <div className="account_menu-head bg-[#c0c0c0] text-white rounded-t-xl mx-auto flex flex-col justify-between p-5 items-center">
           <div className="account_avatarAndName">
             <img
-              src={user?.avatar ? user.avatar : avatar}
+              src={userData?.avatar ? userData.avatar : avatar}
               alt="avatar"
               className="mx-auto rounded-full w-[100px] h-[100px] object-cover object-center"
             />
             <div className="text-[24px] font-bold leading-normal pt-[3px] pb-2 mb-[2px]">
-              {user.namecus ? user.namecus : "Khách hàng"}
+              {userData.namecus ? userData.namecus : "Khách hàng"}
             </div>
           </div>
           <div
@@ -194,7 +194,10 @@ export const AccountSmall = (props) => {
               </li>
             </div>
 
-            <div onClick={() => handleNavigate("/account")} className="block no-underline">
+            <div
+              onClick={() => handleNavigate("/account")}
+              className="block no-underline"
+            >
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -243,7 +246,10 @@ export const AccountSmall = (props) => {
               </li>
             </div>
 
-            <div onClick={() => handleNavigate("/account/address")} className="block no-underline">
+            <div
+              onClick={() => handleNavigate("/account/address")}
+              className="block no-underline"
+            >
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -292,7 +298,7 @@ export const AccountSmall = (props) => {
               </li>
             </div>
 
-            <Link to="/account/prescriptions" className="block no-underline">
+            <div onClick={() => handleNavigate("/account/prescriptions")} className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -339,7 +345,7 @@ export const AccountSmall = (props) => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
             {/* <Link
               to="/account/test_reports"
@@ -393,7 +399,7 @@ export const AccountSmall = (props) => {
               </li>
             </Link> */}
 
-            <Link to="/account/ranking_rules" className="block no-underline">
+            <div onClick={() => handleNavigate("/account/ranking_rules")} className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -440,9 +446,9 @@ export const AccountSmall = (props) => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
 
-            <Link to="/account/history_point" className="block no-underline">
+            <div onClick={() => handleNavigate("/account/history_point")} className="block no-underline">
               <li className="flex justify-between items-center h-16 px-6 hover:bg-[#f4fef2]">
                 <figure className="w-6 h-6 mr-2">
                   <svg
@@ -489,7 +495,7 @@ export const AccountSmall = (props) => {
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </li>
-            </Link>
+            </div>
           </ul>
           <div className="account_support text-center block pt-5 border-t-[16px] border-[#ededed] tracking-normal">
             <div className="pb-5 mb-5 box-border border-b border-[#f2f4f5]">

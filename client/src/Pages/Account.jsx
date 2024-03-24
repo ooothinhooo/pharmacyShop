@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { AccountSmall } from "../Components/Account/AccountSmall";
 import { AccountBig } from "../Components/Account/AccountBig";
 import { useLocation, useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ import { History_point } from "../Components/Account/History_point";
 export const Account = () => {
   // const { userData } = useContext(ShopContext);
   // console.log(userData);
-  const { state } = useLocation();
+  const {state} = useLocation();
   console.log(state);
   const { accountOption } = useParams();
   const components = {
@@ -27,18 +27,18 @@ export const Account = () => {
     History_point,
   };
 
-  console.log(components[capitalize(accountOption)]);
+  // console.log(components[capitalize(accountOption)]);
 
   const DynamicComponent = components[capitalize(accountOption)] || AccountBig;
 
-  console.log(DynamicComponent);
+  // console.log(DynamicComponent);
 
   return (
     <div className="desktop_account-page mt-12">
       <div className="container">
         <div className="desktop_box flex justify-between gap-5 mb-[50px]">
-          <AccountSmall user={state}/>
-          <DynamicComponent user={state}/>
+          <AccountSmall userData={state.userData} addressData={state.addressData}/>
+          <DynamicComponent userData={state.userData} addressData={state.addressData}/>
         </div>
       </div>
     </div>
