@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import AddAddress from "./AddAddress";
 import axios from "axios";
+import AddressDetail from "./AddressDetail";
 
 export const Address = () => {
   const [show, setShow] = useState(false);
@@ -62,7 +63,7 @@ export const Address = () => {
             >
               <div className="flex flex-1 items-start space-x-2">
                 <div className="flex-1">
-                  <div className="grid gap-2">
+                  {/* <div className="grid gap-2">
                     <div className="grid grid-flow-col content-center items-center justify-start gap-2">
                       <span className="break-words line-clamp-1 font-semibold">
                         {address.name_user}
@@ -82,7 +83,8 @@ export const Address = () => {
                         )}
                       </span>
                     </div>
-                  </div>
+                  </div> */}
+                  <AddressDetail address={address} />
                 </div>
                 <button
                 onClick={() => handleUpdateAddress(address)}

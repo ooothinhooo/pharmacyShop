@@ -1,12 +1,54 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../../Context/ShopContext";
 import cash from "../Assets/cash.png";
 import momo from "../Assets/momo.png";
 import credit from "../Assets/credit.png";
 import ATM from "../Assets/atm.png";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import AddressDetail from "../Account/AddressDetail";
+import { createPortal } from "react-dom";
+import AddressModal from "./AddressModal";
 
 export const CheckoutHasProduct = () => {
+  const [show, setShow] = useState(false);
+  const [allAddresses, setAllAddresses] = useState([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cash");
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleHidden = () => {
+    setShow(false);
+  };
+
+  const fetchAddress = async () => {
+    const response = await axios.get("http://localhost:4000/allAddresses", {
+      headers: {
+        "auth-token": localStorage.getItem("auth-token"),
+      },
+    });
+    setAllAddresses(response.data.addresses);
+  };
+
+  useEffect(() => {
+    fetchAddress();
+    const defaultAddress = allAddresses.find(
+      (address) => address.default_address === 1
+    );
+    setSelectedAddress(defaultAddress);
+  }, [allAddresses]);
+
+  console.log(allAddresses);
+
+  const handleApplyAddress = (address) => {
+    // Xử lý logic khi áp dụng địa chỉ đã chọn từ modal
+    setSelectedAddress(address);
+    console.log("Địa chỉ đã chọn:", address);
+  };
+
   const {
     getTotalCartItems,
     getTotalCartAmountWithsale,
@@ -14,6 +56,10 @@ export const CheckoutHasProduct = () => {
     cartItems,
     getTotalCartAmountWithVat,
   } = useContext(ShopContext);
+
+  const handlePaymentMethodChange = (event) => {
+    setSelectedPaymentMethod(event.target.value);
+  };
   return (
     <div className="bg-[#f0f2f5]">
       <div className="container pb-6">
@@ -21,7 +67,7 @@ export const CheckoutHasProduct = () => {
         <div className="checkout_content flex flex-row items-start">
           <div className="checkout_info flex-[1_0]">
             {/* check info product cart */}
-            <div className="product_box shadow-sm">
+            <div className="product_box">
               <div className="infoProduct bg-white pt-6 px-6 pb-4 rounded-xl box-border">
                 <div className="checkout_title">Thanh toán</div>
                 <div className="checkout_subTitle flex mt-3 flex-row items-center">
@@ -59,14 +105,14 @@ export const CheckoutHasProduct = () => {
                             <Link to={`/products/${e.id}`}>
                               <p className="product_name text-left">{e.name}</p>
                             </Link>
-                            
+
                             <p>
                               {(e.price * (1 - e.sale / 100)).toLocaleString(
                                 "vi-VN"
                               )}
                               đ
                             </p>
-                            
+
                             <p>
                               <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
                                 {cartItems[e.id]}
@@ -93,27 +139,43 @@ export const CheckoutHasProduct = () => {
             {/* choose receive  product*/}
             <div className="box-border">
               <div className="py-4 bg-transparent">
-                {/* <div className="receive_info-tab flex flex-row items-center justify-center gap-[46px] text-[#aaa]">
-                  <div className="receive_info-tab--item flex items-center flex-row gap-[6px] font-medium leading-[120%] text-[16px] cursor-pointer">
-                    <input type="radio" name="typeReceive" checked />
-                    <i className="fa-solid fa-truck"></i>
-                    Giao hàng tận nơi
-                  </div>
-
-                  <div className="receive_info-tab--item flex items-center flex-row gap-[6px] font-medium leading-[120%] text-[16px] cursor-pointer">
-                    <input type="radio" name="typeReceive" />
-                    <i className="fa-solid fa-shop"></i>
-                    Nhận tại nhà thuốc
-                  </div>
-                </div> */}
-                <div className="bg-white rounded-lg border border-primaryColor mt-[10px] cursor-pointer">
-                  <div className="py-4 px-5">
-                    <div className="flex flex-row gap-3 items-center">
-                      <i className="fa-solid fa-location-dot text-primaryColor"></i>
-                      <div className="text-[16px] flex-1 font-normal ">
-                        Nhập địa chỉ nhận hàng
+                <div className="bg-white rounded-lg mt-[10px] cursor-pointer">
+                  <div className="container p-6 max-md:p-4">
+                    <div className="text-[16px] flex-1 font-medium mb-6">
+                      Giao hàng tận nơi
+                    </div>
+                    <div>
+                      <div className="text-sm">
+                        <div className="flex">
+                          <div className="flex-1 space-y-2">
+                            <span className="text-base font-semibold">
+                              Thông tin người nhận
+                            </span>
+                            {selectedAddress && (
+                              <AddressDetail address={selectedAddress} />
+                            )}
+                          </div>
+                          <div
+                            onClick={handleShow}
+                            className="text-primaryColor font-semibold"
+                            type="button"
+                          >
+                            Thay đổi
+                          </div>
+                        </div>
+                        <div className="bg-[#f7f7f7] h-[2px] my-4"></div>
+                        <div className="flex">
+                          <div className="flex-1 space-y-2">
+                            <span className="text-sm font-semibold">
+                              Hình thức vận chuyển
+                            </span>
+                            <div className="flex items-center font-semibold">
+                              Viettel Post
+                            </div>
+                          </div>
+                          <div className="ml-2 items-center">16.500đ</div>
+                        </div>
                       </div>
-                      <i className="fa-solid fa-plus"></i>
                     </div>
                   </div>
                 </div>
@@ -142,6 +204,8 @@ export const CheckoutHasProduct = () => {
                         name="paymentMethodType"
                         id="cash"
                         value="cash"
+                        checked={selectedPaymentMethod === "cash"}
+                        onChange={handlePaymentMethodChange}
                       />
                     </div>
                   </div>
@@ -162,6 +226,8 @@ export const CheckoutHasProduct = () => {
                         name="paymentMethodType"
                         id="momo"
                         value="momo"
+                        checked={selectedPaymentMethod === "momo"}
+                        onChange={handlePaymentMethodChange}
                       />
                     </div>
                   </div>
@@ -185,6 +251,8 @@ export const CheckoutHasProduct = () => {
                         name="paymentMethodType"
                         id="credit"
                         value="credit"
+                        checked={selectedPaymentMethod === "credit"}
+                        onChange={handlePaymentMethodChange}
                       />
                     </div>
                   </div>
@@ -206,6 +274,8 @@ export const CheckoutHasProduct = () => {
                         name="paymentMethodType"
                         id="ATM"
                         value="ATM"
+                        checked={selectedPaymentMethod === "ATM"}
+                        onChange={handlePaymentMethodChange}
                       />
                     </div>
                   </div>
@@ -258,6 +328,16 @@ export const CheckoutHasProduct = () => {
           </div>
         </div>
       </div>
+
+      {show &&
+        createPortal(
+          <AddressModal
+            onApply={handleApplyAddress}
+            allAddresses={allAddresses}
+            onClose={handleHidden}
+          />,
+          document.body
+        )}
     </div>
   );
 };
