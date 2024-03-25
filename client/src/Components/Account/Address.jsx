@@ -6,6 +6,7 @@ import axios from "axios";
 export const Address = () => {
   const [show, setShow] = useState(false);
   const [allAddresses, setAllAddresses] = useState([]);
+  const [addressToUpdate, setAddressToUpdate] = useState(null);
 
   const fetchAddress = async () => {
     const response = await axios.get("http://localhost:4000/allAddresses", {
@@ -15,7 +16,7 @@ export const Address = () => {
     });
     setAllAddresses(response.data.addresses);
   };
-  
+
   useEffect(() => {
     fetchAddress();
   }, []);
@@ -31,6 +32,11 @@ export const Address = () => {
     await fetchAddress();
   };
 
+  const handleUpdateAddress = (address) => {
+    setAddressToUpdate(address);
+    setShow(true);
+  }
+
   return (
     <div className="desktop_big flex-1 box-border bg-white rounded-xl min-h-[300px] h-fit p-6">
       <div className="flex items-center justify-between">
@@ -39,7 +45,7 @@ export const Address = () => {
         </div>
         <div>
           <button
-            onClick={() => setShow(true)}
+            onClick={() => {setShow(true); setAddressToUpdate(null)}}
             className="border border-primaryColor rounded-lg px-2 py-1 text-[14px] text-primaryColor transition duration-300 hover:opacity-70"
           >
             <i className="fa-solid fa-circle-plus pr-1"></i>
@@ -79,6 +85,7 @@ export const Address = () => {
                   </div>
                 </div>
                 <button
+                onClick={() => handleUpdateAddress(address)}
                   className="relative flex justify-center border-0 bg-transparent font-normal text-primaryColor outline-none md:text-base md:font-medium md:hover:text-primary-600 mt-0.5"
                   type="buton"
                 >
@@ -129,6 +136,7 @@ export const Address = () => {
           <AddAddress
             onClose={() => setShow(false)}
             fetchAddress={fetchAddress}
+            addressToUpdate={addressToUpdate}
           />,
           document.body
         )}

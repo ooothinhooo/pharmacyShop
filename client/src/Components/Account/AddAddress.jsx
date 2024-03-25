@@ -1,22 +1,43 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const AddAddress = ({ onClose, fetchAddress }) => {
-  const [address, setAddress] = useState({
-    name: "",
-    phone: "",
-    province: "",
-    district: "",
-    ward: "",
-    street: "",
-    isDefaultAddress: false,
+const AddAddress = ({ onClose, fetchAddress, addressToUpdate }) => {
+  const [defaultAddress, setDefaultAddress] = useState(() => {
+    if (addressToUpdate && addressToUpdate.default_address === 1) {
+      return true;
+    } else {
+      return false;
+    }
   });
-
-  const [defaultAddress, setDefaultAddress] = useState(false);
+  let province = "";
+  let district = "";
+  let ward = "";
+  let street = "";
 
   const handleCheckboxChange = (e) => {
-    setDefaultAddress(e.target.checked); // Cập nhật giá trị của state isDefault khi checkbox thay đổi
+    setDefaultAddress(e.target.checked);
   };
+
+  if (addressToUpdate && addressToUpdate.address) {
+    const addressComponents = addressToUpdate.address.split(", ");
+    province = addressComponents[addressComponents.length - 1];
+    district = addressComponents[addressComponents.length - 2];
+    ward = addressComponents[addressComponents.length - 3];
+    street = addressComponents
+      .slice(0, addressComponents.length - 3)
+      .join(", ");
+  }
+
+  const [address, setAddress] = useState({
+    name: addressToUpdate ? addressToUpdate.name_user : "",
+    phone: addressToUpdate ? addressToUpdate.phone : "",
+    province: addressToUpdate ? province : "",
+    district: addressToUpdate ? district : "",
+    ward: addressToUpdate ? ward : "",
+    street: addressToUpdate ? street : "",
+    isDefaultAddress: defaultAddress,
+  });
+
+  console.log(address);
 
   useEffect(() => {
     setAddress((prevAddress) => ({
@@ -31,7 +52,7 @@ const AddAddress = ({ onClose, fetchAddress }) => {
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
-  const UpdateAddress = async () => {
+  const addAddress = async () => {
     console.log(address);
 
     await fetch("http://localhost:4000/AddAddress", {
@@ -54,11 +75,38 @@ const AddAddress = ({ onClose, fetchAddress }) => {
         }
       });
   };
+
+  const updateAddress = async () => {
+    await fetch("http://localhost:4000/updateAddress", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("auth-token"),
+      },
+      body: JSON.stringify({
+        ...address,
+        id: addressToUpdate.idau,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Cập nhật địa chỉ thành công");
+          fetchAddress();
+          onClose();
+        } else {
+          alert("Cập nhật địa chỉ thất bại");
+        }
+      });
+  }
   return (
     <div className="fixed z-30 top-0 left-0 right-0 bottom-0 bg-[rgba(0,_0,_0,_0.3)] flex justify-center items-center">
       <div className="bg-white min-w-[300px] max-w-[400px] max-h-[calc(100vh-100px)] h-auto rounded-md px-4 w-full">
         <div className="flex justify-start items-center py-[10px] relative">
-          <h1 className="text-[24px] font-medium">Thêm địa chỉ mới</h1>
+          <h1 className="text-[24px] font-medium">
+            {addressToUpdate ? "Cập nhật thông tin" : "Thêm địa chỉ mới"}
+          </h1>
           <i
             onClick={onClose}
             className="fa-solid fa-xmark text-[#000] text-[24px] absolute right-[0px] top-[10px] cursor-pointer"
@@ -156,7 +204,7 @@ const AddAddress = ({ onClose, fetchAddress }) => {
           <div className="mt-4">
             <input
               type="checkbox"
-              checked={defaultAddress}
+              checked={address.isDefaultAddress}
               onChange={handleCheckboxChange}
             />
             <span className="pl-1">Đặt làm địa chỉ mặt định</span>
@@ -170,12 +218,21 @@ const AddAddress = ({ onClose, fetchAddress }) => {
           >
             Quay lại
           </button>
-          <button
-            onClick={() => UpdateAddress()}
-            className="border py-2 px-4 rounded-md bg-green-600 text-white font-medium hover:bg-green-800"
-          >
-            Lưu lại
-          </button>
+          {addressToUpdate ? (
+            <button
+              onClick={() => updateAddress()}
+              className="border py-2 px-4 rounded-md bg-green-600 text-white font-medium hover:bg-green-800"
+            >
+              Cập nhật
+            </button>
+          ) : (
+            <button
+              onClick={() => addAddress()}
+              className="border py-2 px-4 rounded-md bg-green-600 text-white font-medium hover:bg-green-800"
+            >
+              Lưu lại
+            </button>
+          )}
         </div>
       </div>
     </div>

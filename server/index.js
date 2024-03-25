@@ -500,6 +500,49 @@ app.get("/allAddresses", fetchUser, async (req, res) => {
   }
 });
 
+// Create update address endpoint
+app.post("/updateAddress", fetchUser, async (req, res) => {
+  let { id, name, phone, street, ward, district, province, isDefaultAddress } =
+    req.body;
+  const address = `${street}, ${ward}, ${district}, ${province}`;
+  console.log(address);
+  console.log(isDefaultAddress);
+  try {
+    // Check if the user already has a default address
+    const existingDefaultAddress = await db.query(
+      "SELECT * FROM addresses_user WHERE default_address = '1' AND ida = $1",
+      [req.user.id]
+    );
+
+    // If the user already has a default address, update the old default address to non-default
+    if (existingDefaultAddress.rows.length > 0) {
+      await db.query(
+        "UPDATE addresses_user SET default_address = '0' WHERE idau = $1",
+        [existingDefaultAddress.rows[0].idau]
+      );
+    }
+
+    // Add a new address with the corresponding default_address value
+    if (isDefaultAddress) {
+      await db.query(
+        "UPDATE addresses_user SET name_user = $1, phone = $2, address = $3, default_address = '1' WHERE idau = $4",
+        [name, phone, address, id]
+      );
+    } else {
+      await db.query(
+        "UPDATE addresses_user SET name_user = $1, phone = $2, address = $3 WHERE idau = $4",
+        [name, phone, address, id]
+      );
+    }
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create delete Address endpoint
 app.post("/deleteAddress", async (req, res) => {
   const { id } = req.body;
