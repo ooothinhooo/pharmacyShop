@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddressDetail from "../Account/AddressDetail";
 
-const AddressModal = ({ onClose, allAddresses, onApply }) => {
-  const [selectedAddress, setSelectedAddress] = useState(null);
+const AddressModal = ({ onClose, allAddresses, onApply, selectAddress }) => {
+  const [selectedAddress, setSelectedAddress] = useState(selectAddress);
 
-  useEffect(() => {
-    const defaultAddress = allAddresses.find(
-      (address) => address.default_address === 1
-    );
-    setSelectedAddress(defaultAddress);
-  }, [allAddresses]);
-  
+  // useEffect(() => {
+  //   const defaultAddress = allAddresses.find(
+  //     (address) => address.default_address === 1
+  //   );
+  //   setSelectedAddress(defaultAddress);
+  // }, [allAddresses]);
+
   const handleApply = () => {
     if (selectedAddress) {
       onApply(selectedAddress);
@@ -64,7 +64,10 @@ const AddressModal = ({ onClose, allAddresses, onApply }) => {
             Quay lại
           </button>
 
-          <button className="border py-2 px-3 rounded-md bg-green-600 font-medium text-white hover:bg-green-700" onClick={handleApply}>
+          <button
+            className="border py-2 px-3 rounded-md bg-green-600 font-medium text-white hover:bg-green-700"
+            onClick={handleApply}
+          >
             Áp dụng
           </button>
         </div>

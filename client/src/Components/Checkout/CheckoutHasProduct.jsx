@@ -4,17 +4,52 @@ import cash from "../Assets/cash.png";
 import momo from "../Assets/momo.png";
 import credit from "../Assets/credit.png";
 import ATM from "../Assets/atm.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddressDetail from "../Account/AddressDetail";
 import { createPortal } from "react-dom";
 import AddressModal from "./AddressModal";
 
 export const CheckoutHasProduct = () => {
+  const {
+    getTotalCartItems,
+    getTotalCartAmountWithsale,
+    all_products,
+    cartItems,
+  } = useContext(ShopContext);
+
   const [show, setShow] = useState(false);
   const [allAddresses, setAllAddresses] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cash");
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const calculatedTotal = getTotalCartAmountWithsale();
+    setTotalAmount(calculatedTotal);
+  }, [getTotalCartAmountWithsale]);
+
+  const [order, setOrder] = useState({
+    order_date: new Date(Date.now()),
+    total:
+      getTotalCartAmountWithsale() > 150000
+        ? getTotalCartAmountWithsale()
+        : getTotalCartAmountWithsale() + 16500,
+    payment_method: selectedPaymentMethod,
+    order_note: "",
+    cartItems: cartItems,
+    address: "",
+  });
+
+  const changeHandle = (e) => {
+    setOrder({ ...order, [e.target.name]: e.target.value });
+  };
+
+  const handleNavigateToProduct = (idProduct) => {
+    const product = all_products.find((product) => product.id === idProduct);
+    navigate(`/products/${idProduct}`, { state: product });
+  };
 
   const handleShow = () => {
     setShow(true);
@@ -24,17 +59,24 @@ export const CheckoutHasProduct = () => {
     setShow(false);
   };
 
-  const fetchAddress = async () => {
-    const response = await axios.get("http://localhost:4000/allAddresses", {
-      headers: {
-        "auth-token": localStorage.getItem("auth-token"),
-      },
-    });
-    setAllAddresses(response.data.addresses);
-  };
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/allAddresses", {
+          headers: {
+            "auth-token": localStorage.getItem("auth-token"),
+          },
+        });
+        setAllAddresses(response.data.addresses);
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+
+    fetchAddress();
+  }, []);
 
   useEffect(() => {
-    fetchAddress();
     const defaultAddress = allAddresses.find(
       (address) => address.default_address === 1
     );
@@ -49,16 +91,38 @@ export const CheckoutHasProduct = () => {
     console.log("Địa chỉ đã chọn:", address);
   };
 
-  const {
-    getTotalCartItems,
-    getTotalCartAmountWithsale,
-    all_products,
-    cartItems,
-    getTotalCartAmountWithVat,
-  } = useContext(ShopContext);
-
   const handlePaymentMethodChange = (event) => {
     setSelectedPaymentMethod(event.target.value);
+  };
+
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      address: selectedAddress ? selectedAddress.address : "",
+    }));
+  }, [selectedAddress]);
+
+  const addOrder = async () => {
+    console.log(order);
+
+    await fetch("http://localhost:4000/addOrder", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("auth-token"),
+      },
+      body: JSON.stringify(order),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Đặt hàng thành công");
+          navigate("/");
+        } else {
+          alert("Đặt hàng thất bại");
+        }
+      });
   };
   return (
     <div className="bg-[#f0f2f5]">
@@ -99,12 +163,12 @@ export const CheckoutHasProduct = () => {
                             className="w-full py-5 grid grid-cols-[1fr_3.8fr_1fr_1fr_1fr] gap-[10px] items-center"
                             key={i}
                           >
-                            <Link to={`/products/${e.id}`}>
+                            <div onClick={() => handleNavigateToProduct(e.id)}>
                               <img src={e.image} alt="" className="w-[72px]" />
-                            </Link>
-                            <Link to={`/products/${e.id}`}>
+                            </div>
+                            <div onClick={() => handleNavigateToProduct(e.id)}>
                               <p className="product_name text-left">{e.name}</p>
-                            </Link>
+                            </div>
 
                             <p>
                               {(e.price * (1 - e.sale / 100)).toLocaleString(
@@ -285,14 +349,22 @@ export const CheckoutHasProduct = () => {
           </div>
           <div className="check_summary ml-6 max-w-[440px] flex-[0_0_30%]">
             <div className="summary_box p-6 m-0 bg-white rounded-lg">
-              <div className="checkout_title">Tổng tiền</div>
-              <div className="justify-between flex items-center mt-4">
+              <div className="checkout_title">Chi tiết thanh toán</div>
+              <div className="justify-between text-[13px] text-[#2b2b2b] flex items-center mt-4">
                 <div>Tạm tính</div>
                 <div>
-                  <b className="text-[24px]">
-                    {getTotalCartAmountWithsale().toLocaleString("vi-VN")} đ
-                  </b>
+                  {getTotalCartAmountWithsale().toLocaleString("vi-VN")} đ
                 </div>
+              </div>
+
+              <div className="flex justify-between text-[13px] text-[#2b2b2b] items-center mt-2">
+                <div>Phí vận chuyển</div>
+                <div>16.500 đ</div>
+              </div>
+
+              <div className="flex justify-between text-[13px] text-[#2b2b2b] items-center mt-2">
+                <div>Giảm giá vận chuyển</div>
+                <div>{totalAmount > 150000 ? "-16.500 đ" : "0 đ"}</div>
               </div>
               <div className="summary_line mt-4 border-t border-[#e5e5e5] mx-[-24px]"></div>
               <div className="justify-between flex items-center mt-4">
@@ -304,7 +376,10 @@ export const CheckoutHasProduct = () => {
                 </div>
                 <div>
                   <b className="text-[24px] text-red-500">
-                    {getTotalCartAmountWithVat().toLocaleString("vi-VN")}đ
+                    {/* {getTotalCartAmountWithsale().toLocaleString("vi-VN")}đ */}
+                    {totalAmount < 150000
+                      ? (totalAmount + 16500).toLocaleString("vi-VN") + " đ"
+                      : totalAmount.toLocaleString("vi-VN") + " đ"}
                   </b>
                 </div>
               </div>
@@ -312,7 +387,9 @@ export const CheckoutHasProduct = () => {
               <div className="mt-4">
                 <div>Ghi chú Đơn hàng</div>
                 <textarea
-                  name="note"
+                  onChange={changeHandle}
+                  value={order.order_note}
+                  name="order_note"
                   id="note"
                   cols="40"
                   rows="4"
@@ -320,7 +397,10 @@ export const CheckoutHasProduct = () => {
                 ></textarea>
               </div>
               <div className="mt-4">
-                <button className="w-full bg-[#feaa48] rounded-lg p-4 text-white font-bold text-[18px] border-none outline-none">
+                <button
+                  onClick={addOrder}
+                  className="w-full bg-[#feaa48] rounded-lg p-4 text-white font-bold text-[18px] border-none outline-none"
+                >
                   Đặt hàng
                 </button>
               </div>
@@ -333,6 +413,7 @@ export const CheckoutHasProduct = () => {
         createPortal(
           <AddressModal
             onApply={handleApplyAddress}
+            selectAddress={selectedAddress}
             allAddresses={allAddresses}
             onClose={handleHidden}
           />,

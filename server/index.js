@@ -192,14 +192,34 @@ app.get("/allCustomers", async (req, res) => {
 });
 
 // Create get all order endpoint
-app.get("/allOrders", async (req, res) => {
+app.get("/allOrdersAdmin", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM orders");
+    const result = await db.query(
+      "SELECT * FROM orders JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id "
+    );
     res.json({
       success: true,
       orders: result.rows,
     });
   } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create update status order endpoint
+app.post("/updateStatusOrder", async (req, res) => {
+  const { order_id, status } = req.body;
+
+  console.log("id: " + order_id);
+  console.log("status: " + status);
+
+  try {
+    db.query("UPDATE orders SET status = $1 WHERE order_id = $2", [status, order_id]);
+    res.json({
+      success: true,
+      message: "Status updated",
+    });
+  } catch (err) { 
     console.log(err);
   }
 });
@@ -551,6 +571,90 @@ app.post("/deleteAddress", async (req, res) => {
     res.json({
       success: true,
       message: "Address deleted",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create order endpoints
+app.post("/addOrder", fetchUser, async (req, res) => {
+  let { order_date, total, payment_method, order_note, cartItems, address } =
+    req.body;
+  let hasProduct = [];
+  // console.log(cartItems);
+
+  for (const item in cartItems) {
+    if (cartItems[item] > 0) {
+      hasProduct.push(item);
+    }
+  }
+  // console.log(hasProduct);
+
+  try {
+    const result = await db.query(
+      "INSERT INTO orders (order_date, total, payment_method, order_note, address, ida) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+      [order_date, total, payment_method, order_note, address, req.user.id]
+    );
+
+    const orderId = result.rows[0].id;
+
+    for (let i = 0; i < hasProduct.length; i++) {
+      const product = await db.query("SELECT * FROM medicines WHERE id = $1", [
+        hasProduct[i],
+      ]);
+
+      db.query(
+        "INSERT INTO orders_detail (order_id, medicine_id, quantity, price, total) VALUES ($1, $2, $3, $4, $5)",
+        [
+          orderId,
+          hasProduct[i],
+          cartItems[hasProduct[i]],
+          product.rows[0].price -
+            (product.rows[0].price * product.rows[0].sale) / 100,
+          (product.rows[0].price -
+            (product.rows[0].price * product.rows[0].sale) / 100) *
+            cartItems[hasProduct[i]],
+        ]
+      );
+    }
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log("lỗi:" + err);
+  }
+});
+
+// Create all order endpoint
+app.get("/allOrders", fetchUser, async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM orders WHERE ida = $1", [
+      req.user.id,
+    ]);
+    res.json({
+      success: true,
+      orders: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all order detail endpoint
+app.post("/allOrderDetails", async (req, res) => {
+  const { idOrder } = req.body;
+  console.log("idOrder: " + idOrder);
+  try {
+    const result = await db.query(
+      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id  JOIN medicines ON orders_detail.medicine_id = medicines.id  JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id WHERE orders.order_id = $1",
+      [idOrder]
+    );
+
+    res.json({
+      success: true,
+      orderDetails: result.rows,
     });
   } catch (err) {
     console.log(err);

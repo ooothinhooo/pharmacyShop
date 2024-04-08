@@ -10,6 +10,7 @@ import { Prescriptions } from "../Components/Account/Prescriptions";
 // import { Test_reports } from "../Components/Account/Test_reports";
 import { Ranking_rules } from "../Components/Account/Ranking_rules";
 import { History_point } from "../Components/Account/History_point";
+import Order_detail from "../Components/Account/Order_detail";
 // import { ShopContext } from "../Context/ShopContext";
 
 export const Account = () => {
@@ -20,6 +21,7 @@ export const Account = () => {
   const { accountOption } = useParams();
   const components = {
     Orders,
+    Order_detail,
     Coupon,
     Address,
     Prescriptions,
@@ -38,7 +40,7 @@ export const Account = () => {
       <div className="container">
         <div className="desktop_box flex justify-between gap-5 mb-[50px]">
           <AccountSmall userData={state.userData} addressData={state.addressData}/>
-          <DynamicComponent userData={state.userData} addressData={state.addressData}/>
+          <DynamicComponent userData={state.userData} addressData={state.addressData} idOrder={state.idOrder}/>
         </div>
       </div>
     </div>

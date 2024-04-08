@@ -26,7 +26,7 @@ function App() {
             <Route path="/thiet-bi-y-te" element={<PharmaCategory title="Thiết bị y tế" category={"Thiết bị y tế"}/>}></Route>
 
             <Route path="/products" element={<PharmaProduct/>}>
-              <Route path=":productId"></Route>
+              <Route path=":productId" element={<PharmaProduct/>}></Route>
             </Route>
             
             <Route path="/cart" element={<PharmaCart/>}></Route>
