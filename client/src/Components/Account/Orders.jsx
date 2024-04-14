@@ -7,6 +7,7 @@ import { ShopContext } from "../../Context/ShopContext";
 export const Orders = () => {
   const [activeTab, setActiveTab] = useState("Đang xử lý");
   const [orderList, setOrderList] = useState([]);
+  const [filteredOrderList, setFilteredOrderList] = useState([]);
   const { userData } = useContext(ShopContext);
   console.log(userData);
   const navigate = useNavigate();
@@ -18,26 +19,48 @@ export const Orders = () => {
     console.log(`selected ${value}`);
   };
 
+  const getOrder = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/allOrders", {
+        headers: {
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
+
+      const allOrders = response.data.orders;
+      setOrderList(allOrders);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const getOrder = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/allOrders", {
-          headers: {
-            "auth-token": localStorage.getItem("auth-token"),
-          },
-        });
-
-        const allOrders = response.data.orders;
-        setOrderList(allOrders);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     getOrder();
-  }, []);
+  })
 
-  console.log(orderList);
+  useEffect(() => {
+    const filteredOrders = orderList.filter((order) => {
+      switch (activeTab) {
+        case "Đang xử lý":
+          return order.status === 0;
+        case "Đã đóng gói":
+          return order.status === 1;
+        case "Đang giao":
+          return order.status === 2;
+        case "Đã giao":
+          return order.status === 3;
+        case "Đã hủy":
+          return order.status === 4;
+        default:
+          return true;
+      }
+    });
+    setFilteredOrderList(filteredOrders);
+  }, [activeTab, orderList]);
+
+  console.log(filteredOrderList);
+
+  // console.log(orderList);
 
   return (
     <div className="desktop_big flex-1 box-border rounded-xl min-h-[300px] h-fit px-6 sticky top-[110px]">
@@ -142,8 +165,8 @@ export const Orders = () => {
             </div>
 
             <div className="list_order-info mt-4">
-              {orderList &&
-                orderList.map((order) => {
+              {filteredOrderList &&
+                filteredOrderList.map((order) => {
                   const orderDate = new Date(order.order_date); // Create a Date object
                   const formattedDate = `${orderDate
                     .getHours()
@@ -177,12 +200,15 @@ export const Orders = () => {
                             <span className="mr-2 font-normal text-inherit">
                               Giá trị đơn:
                             </span>
-                            {Number(order.total_order).toLocaleString("vi-VN")} đ
+                            {Number(order.total_order).toLocaleString("vi-VN")}{" "}
+                            đ
                           </h4>
                         </div>
                         <div className="border-0 text-sm text-green-700 md:text-base font-medium md:hover:text-green-800">
                           <span
-                            onClick={() => handleNavigateToOrderDetail(order.order_id)}
+                            onClick={() =>
+                              handleNavigateToOrderDetail(order.order_id)
+                            }
                             className="mr-1"
                           >
                             Xem chi tiết

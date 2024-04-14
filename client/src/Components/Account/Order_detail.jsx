@@ -45,7 +45,15 @@ const Order_detail = (props) => {
   );
 
   const filterStatus = orderDetails.map((order) =>
-    order.status === 0 ? "Đang duyệt đơn hàng" : "Đơn hàng đã được duyệt"
+    order.status === 0
+      ? "Đang duyệt đơn hàng"
+      : order.status === 1
+      ? "đã được duyệt"
+      : order.status === 2
+      ? "đang trên đường giao đến bạn"
+      : order.status === 3
+      ? "đã giao thành công"
+      : "đã hủy"
   );
 
   const totalPrice = orderDetails.reduce(
