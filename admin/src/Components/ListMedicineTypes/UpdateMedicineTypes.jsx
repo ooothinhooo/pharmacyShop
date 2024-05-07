@@ -2,17 +2,19 @@
 import React from "react";
 
 // eslint-disable-next-line react/prop-types
-const AccountDetail = ({ onClose, updateAccount }) => {
-  const handleUpdateAccount = async () => {
-    console.log("Add Account");
+const UpdateMedicineTypes = ({ onClose, updateMedicineType }) => {
+  const handleAddMedicineType = async () => {
+    console.log("Add Medicine Type");
   };
-
+  const handleUpdateMedicineType = async () => {
+    console.log("Add Medicine Type");
+  };
   return (
     <div className="fixed z-30 top-0 left-0 right-0 bottom-0 bg-[rgba(0,_0,_0,_0.3)] flex justify-center items-center">
       <div className="bg-white min-w-[300px] max-w-[600px] max-h-[calc(100vh-100px)] h-auto rounded-md px-4 w-full">
         <div className="flex justify-start items-center py-[10px] relative">
           <h1 className="text-[24px] font-medium">
-            {updateAccount ? "Cập nhật tài khoản" : "Chi tiết tài khoản"}
+            {updateMedicineType ? "Cập nhật danh mục" : "Thêm danh mục"}
           </h1>
           <i
             onClick={onClose}
@@ -28,12 +30,19 @@ const AccountDetail = ({ onClose, updateAccount }) => {
             Quay lại
           </button>
 
-          {updateAccount && (
+          {updateMedicineType ? (
             <button
               className="border py-2 px-3 rounded-md mr-4 bg-neutral-200 font-medium hover:bg-neutral-300"
-              onClick={() => handleUpdateAccount()}
+              onClick={() => handleUpdateMedicineType()}
             >
               Cập nhật
+            </button>
+          ) : (
+            <button
+              className="border py-2 px-3 rounded-md mr-4 bg-neutral-200 font-medium hover:bg-neutral-300"
+              onClick={() => handleAddMedicineType()}
+            >
+              Thêm
             </button>
           )}
         </div>
@@ -42,4 +51,4 @@ const AccountDetail = ({ onClose, updateAccount }) => {
   );
 };
 
-export default AccountDetail;
+export default UpdateMedicineTypes;

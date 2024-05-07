@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     screens: {
       sm: "600px",
-      md: "728px",
+      md: "768px",
       lg: "984px",
       "1lg": "1200px",
       xl: "1240px",

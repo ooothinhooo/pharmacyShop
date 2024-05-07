@@ -206,6 +206,21 @@ app.get("/allOrdersAdmin", async (req, res) => {
   }
 });
 
+// Create get all order details admin endpoint
+app.get("/allOrderDetailsAdmin", async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id JOIN medicines ON orders_detail.medicine_id = medicines.id JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id"
+    );
+    res.json({
+      success: true,
+      orders: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create update status order endpoint
 app.post("/updateStatusOrder", async (req, res) => {
   const { order_id, status } = req.body;
@@ -214,12 +229,15 @@ app.post("/updateStatusOrder", async (req, res) => {
   console.log("status: " + status);
 
   try {
-    db.query("UPDATE orders SET status = $1 WHERE order_id = $2", [status, order_id]);
+    db.query("UPDATE orders SET status = $1 WHERE order_id = $2", [
+      status,
+      order_id,
+    ]);
     res.json({
       success: true,
       message: "Status updated",
     });
-  } catch (err) { 
+  } catch (err) {
     console.log(err);
   }
 });
@@ -231,6 +249,65 @@ app.get("/allSuppliers", async (req, res) => {
     res.json({
       success: true,
       suppliers: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create get all voucher endpoint
+app.get("/allVouchers", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM vouchers");
+    res.json({
+      success: true,
+      vouchers: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Crate add voucher endpoint
+app.post("/addVoucher", async (req, res) => {
+  let {
+    code,
+    value,
+    min_order_value,
+    type,
+    date_start,
+    date_end,
+    quantity,
+    apply,
+  } = req.body;
+
+  console.log("code: " + code);
+  console.log("value: " + value);
+  console.log("min_order_value: " + min_order_value);
+  console.log("voucher_type: " + type);
+  console.log("start_date: " + date_start);
+  console.log("end_date: " + date_end);
+  console.log("quantity: " + quantity);
+  console.log("apply: " + apply);
+
+  try {
+    db.query(
+      "INSERT INTO vouchers (voucher_code, value, min_order_value, voucher_type, start_date, end_date, quantity, apply ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [
+        code,
+        value,
+        min_order_value,
+        type,
+        date_start,
+        date_end,
+        quantity,
+        apply,
+      ]
+    );
+
+    res.json({
+      success: true,
+      code: code,
     });
   } catch (err) {
     console.log(err);
@@ -579,8 +656,7 @@ app.post("/deleteAddress", async (req, res) => {
 
 // Create order endpoints
 app.post("/addOrder", fetchUser, async (req, res) => {
-  let { order_date, total, payment_method, order_note, cartItems, address } =
-    req.body;
+  let { order_date, total, order_note, cartItems, address } = req.body;
   let hasProduct = [];
   // console.log(cartItems);
 
@@ -593,11 +669,11 @@ app.post("/addOrder", fetchUser, async (req, res) => {
 
   try {
     const result = await db.query(
-      "INSERT INTO orders (order_date, total, payment_method, order_note, address, ida) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-      [order_date, total, payment_method, order_note, address, req.user.id]
+      "INSERT INTO orders (order_date, total_order, order_note, address, ida) VALUES ($1, $2, $3, $4, $5) RETURNING order_id",
+      [order_date, total, order_note, address, req.user.id]
     );
 
-    const orderId = result.rows[0].id;
+    const orderId = result.rows[0].order_id;
 
     for (let i = 0; i < hasProduct.length; i++) {
       const product = await db.query("SELECT * FROM medicines WHERE id = $1", [
@@ -605,7 +681,7 @@ app.post("/addOrder", fetchUser, async (req, res) => {
       ]);
 
       db.query(
-        "INSERT INTO orders_detail (order_id, medicine_id, quantity, price, total) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO orders_detail (order_id, medicine_id, quantity_order, price, total) VALUES ($1, $2, $3, $4, $5)",
         [
           orderId,
           hasProduct[i],
@@ -655,6 +731,34 @@ app.post("/allOrderDetails", async (req, res) => {
     res.json({
       success: true,
       orderDetails: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create cancel Order endpoint for user
+app.post("/cancelOrder", async (req, res) => {
+  const { idOrder } = req.body;
+  try {
+    db.query("UPDATE orders SET status = 4 WHERE order_id = $1", [idOrder]);
+    res.json({
+      success: true,
+      message: "Order canceled",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create confirm Order endpoint for user
+app.post("/confirmOrder", async (req, res) => {
+  const { idOrder } = req.body;
+  try {
+    db.query("UPDATE orders SET status = 3 WHERE order_id = $1", [idOrder]);
+    res.json({
+      success: true,
+      message: "Order confirmed",
     });
   } catch (err) {
     console.log(err);

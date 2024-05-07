@@ -70,7 +70,7 @@ export const ProductDisplay = (props) => {
                     )}
                   </div>
                   <div className="text-[12px] pb-4">
-                    <div>Giá chưa bao gồm cả thuế</div>
+                    <div>Giá bao gồm cả thuế</div>
                     <div>
                       Phí vận chuyển và các chi phí khác (nếu có) sẽ được thể
                       hiện khi đặt hàng.

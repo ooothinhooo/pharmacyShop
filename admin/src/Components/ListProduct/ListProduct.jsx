@@ -1,10 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { Pagination } from "antd";
+import { createPortal } from "react-dom";
+import ProductDetail from "./ProductDetail";
 
 const ListProduct = () => {
   const [allProducts, setAllProducts] = useState([]);
-
+  const [show, setShow] = useState(false);
+  const [productToUpdate, setProductToUpdate] = useState(null);
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
 
@@ -29,6 +32,15 @@ const ListProduct = () => {
     });
 
     await fetchInfo();
+  };
+
+  const handleUpdateProduct = (product) => {
+    setProductToUpdate(product);
+    setShow(true);
+  };
+
+  const handleShow = () => {
+    setShow(true);
   };
 
   return (
@@ -67,8 +79,21 @@ const ListProduct = () => {
                   <p>{product.quantity}</p>
                   <p>{product.price}</p>
 
-                  <button className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white">Xem chi tiết</button>
-                  <button className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white">Chỉnh sửa</button>
+                  <button
+                    onClick={() => {
+                      handleShow();
+                      setProductToUpdate(null);
+                    }}
+                    className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
+                  >
+                    Xem chi tiết
+                  </button>
+                  <button
+                    onClick={() => handleUpdateProduct(product)}
+                    className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
+                  >
+                    Chỉnh sửa
+                  </button>
                   <button className="hover:text-primaryColor">
                     <i
                       // onClick={() => {
@@ -93,7 +118,14 @@ const ListProduct = () => {
         }
       </div>
 
-      
+      {show &&
+        createPortal(
+          <ProductDetail
+            onClose={() => setShow(false)}
+            productToUpdate={productToUpdate}
+          />,
+          document.body
+        )}
     </div>
   );
 };

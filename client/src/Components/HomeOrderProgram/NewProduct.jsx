@@ -108,6 +108,7 @@ const NewProduct = () => {
                   name={product.name}
                   price={product.price}
                   sale={product.price * (1 - product.sale / 100)}
+                  numSale={product.sale}
                 />
               );
             })}

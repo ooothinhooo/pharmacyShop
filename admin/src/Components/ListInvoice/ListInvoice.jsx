@@ -10,7 +10,7 @@ const ListInvoice = () => {
   const pageSize = 5;
 
   const fetchInfo = async () => {
-    const response = await fetch("http://localhost:4000/allOrders");
+    const response = await fetch("http://localhost:4000/allOrderDetailsAdmin");
     const data = await response.json();
     setOrders(data.orders);
   };

@@ -18,8 +18,8 @@ export const AccountSmall = (props) => {
   };
 
   return (
-    <div className="desktop_small flex-[0_0_420px]">
-      <div className="account_menu min-w-[420px]">
+    <div className="desktop_small flex-[0_0_288px]">
+      <div className="account_menu min-w-[288px]">
         <div className="account_menu-head bg-[#c0c0c0] text-white rounded-t-xl mx-auto flex flex-col justify-between p-5 items-center">
           <div className="account_avatarAndName">
             <img
@@ -44,9 +44,9 @@ export const AccountSmall = (props) => {
                     alt="rank"
                   />
                   <div className="infoRank ml-3">
-                    <div className="cardLabel bg-[#c0c0c0] text-[12px] rounded border border-white text-center py-[2px] uppercase px-[10px] w-fit">
+                    {/* <div className="cardLabel bg-[#c0c0c0] text-[12px] rounded border border-white text-center py-[2px] uppercase px-[10px] w-fit">
                       Hạng
-                    </div>
+                    </div> */}
                     <div className="cardRank text-[20px] text-black uppercase mt-[2px] font-bold">
                       Bạc
                     </div>
@@ -77,13 +77,13 @@ export const AccountSmall = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="cardMember_footer bg-[#ededed] rounded-b-xl py-[7px] px-4">
+              {/* <div className="cardMember_footer bg-[#ededed] rounded-b-xl py-[7px] px-4">
                 <span className="flex text-[12px] text-black whitespace-break-spaces">
                   <img src={rewardPoint} alt="point" />
                   <b> 0 </b>
                   xu
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

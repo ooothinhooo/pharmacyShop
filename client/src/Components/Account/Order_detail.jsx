@@ -79,6 +79,46 @@ const Order_detail = (props) => {
   const paymentMethod = new Set(filterPaymentMethod);
   const status = new Set(filterStatus);
 
+  const cancelOrder = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/cancelOrder",
+        { idOrder }
+      );
+
+      if (response.data.success) {
+        alert("Hủy đơn hàng thành công");
+        navigate(-1);
+      } else {
+        alert("Hủy đơn hàng thất bại");
+      }
+
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+
+    // console.log(idOrder);
+  }
+
+  const confirmOrder = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/confirmOrder",
+        { idOrder }
+      );
+
+      if (response.data.success) {
+        alert("xác nhận đơn hàng thành công");
+        navigate(-1)
+      } else {
+        alert("xác nhận đơn hàng thất bại")
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className="flex-1">
       <div className="items-center space-x-4 mb-4 flex">
@@ -116,8 +156,8 @@ const Order_detail = (props) => {
               </div>
               <div className="rounded-md bg-white block">
                 <div className="grid content-start gap-1 rounded-sm bg-white p-4">
-                  <div className="font-semibold">Mã đơn hàng</div>
-                  <div className="grid grid-flow-col items-start justify-between gap-4">
+                  <div className="font-semibold grid grid-flow-col justify-between gap-4">
+                    <span>Mã đơn hàng</span>
                     <p>{id}</p>
                   </div>
 
@@ -134,6 +174,22 @@ const Order_detail = (props) => {
                     </p>
                     <p className="text-sm text-neutral-900">{status}</p>
                   </div>
+
+                  {status.has("Đang duyệt đơn hàng") && (
+                    <div className="flex justify-end mt-4">
+                      <button onClick={cancelOrder} className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600">
+                        Hủy đặt hàng
+                      </button>
+                    </div>
+                  )}
+
+                  {status.has("đang trên đường giao đến bạn") && (
+                    <div className="flex justify-end mt-4">
+                      <button onClick={confirmOrder} className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600">
+                        Xác nhận đơn hàng
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

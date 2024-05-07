@@ -8,8 +8,9 @@ import ListMedicineTypes from "../../Components/ListMedicineTypes/ListMedicineTy
 import ListAccounts from "../../Components/ListAccounts/ListAccounts";
 import ListCustomer from "../../Components/LitstCustomer/ListCustomer";
 import ListOrders from "../../Components/ListOrders/ListOrders";
-import ListInvoice from "../../Components/ListInvoice/ListInvoice";
+// import ListInvoice from "../../Components/ListInvoice/ListInvoice";
 import ListSuppliers from "../../Components/ListSuppliers/ListSuppliers";
+import Vouchers from "../../Components/Vouchers/Vouchers";
 
 
 
@@ -18,14 +19,16 @@ const Admin = () => {
     <div className="admin flex">
       <SlideBar />
       <Routes>
+        <Route path="/" element={<AddProduct />}/>
         <Route path="/addProduct"  element={<AddProduct />}/>
         <Route path="/listProduct"  element={<ListProduct />}/>
         <Route path="/medicineTypes"  element={<ListMedicineTypes />}/>
         <Route path="/listAccounts"  element={<ListAccounts />}/>
         <Route path="/listCustomers"  element={<ListCustomer />}/>
         <Route path="/listOrders"  element={<ListOrders />}/>
-        <Route path="/listInvoice"  element={<ListInvoice />}/>
+        {/* <Route path="/listInvoice"  element={<ListInvoice />}/> */}
         <Route path="/listSuppliers"  element={<ListSuppliers />}/>
+        <Route path="/vouchers"  element={<Vouchers />}/>
       </Routes>
     </div>
   );

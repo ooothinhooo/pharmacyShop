@@ -54,7 +54,7 @@ export const PharmaCategory = (props) => {
   const [showPrice, setShowPrice] = useState(false);
 
   const handleShowPrice = () => {
-    setShowPrice(!showPrice);
+    setShowPrice(true);
   };
 
   const handleBlurShowPrice = () => {
@@ -81,11 +81,11 @@ export const PharmaCategory = (props) => {
       <div className="category_body">
         <div className="container">
           <div className="category_body-box flex justify-between">
-            <div className="category_body-aside w-[260px] border-r border-r-[#e5e5e5] pr-[15px]">
+            <div className="hidden lg:block category_body-aside w-[260px] border-r border-r-[#e5e5e5] pr-[15px] ">
               {/* <div className="category_aside-title">
                 <h3>Danh mục</h3>
               </div> */}
-              <div className="category_aside-box max-h-[1000px] overflow-hidden h-auto">
+              <div className="category_aside-box overflow-hidden h-auto mt-5">
                 <Collapse
                   defaultActiveKey={["1"]}
                   onChange={onChange}
@@ -94,13 +94,13 @@ export const PharmaCategory = (props) => {
                 />
               </div>
             </div>
-            <div className="category_body-product">
-              <div className="category_product-head relative mt-5 z-20">
-                <div className="flex mb-5">
+            <div className="category_body-product !w-full">
+              <div className="category_product-head relative mt-5 z-20 pl-3">
+                <div className="flex mb-5 relative justify-between items-center ">
                   <div className="!flex">
                     <div className="relative mr-3 inline-block">
                       <button
-                        className="flex items-center box-border rounded-md bg-[#f2fef3] focus:bg-lime-300 hover:bg-lime-300 py-[5px] px-[12px]"
+                        className="flex items-center text-white box-border rounded-md bg-green-600 focus:bg-green-700 hover:bg-green-700 py-[5px] px-[12px]"
                         onClick={handleShowPrice}
                         onBlur={handleBlurShowPrice}
                       >
@@ -135,10 +135,18 @@ export const PharmaCategory = (props) => {
                       </div>
                     </div>
                   </div>
+                  <div className="lg:hidden absolute right-0 top-0 category_aside-box overflow-hidden h-auto">
+                    <Collapse
+                      defaultActiveKey={["1"]}
+                      onChange={onChange}
+                      expandIconPosition="end"
+                      items={items}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="category_product-body mt-5 mb-10 relative z-10  grid gap-4 xl:grid-cols-4  md:grid-cols-3 md:gap-2 sm:gird-cols-2 ">
+              <div className="category_product-body mt-5 mb-10 relative z-10  grid gap-4 xl:grid-cols-4  md:grid-cols-3 md:gap-2 sm:grid-cols-2">
                 {categoryCurrent
                   .slice((current - 1) * pageSize, current * pageSize)
                   .map((product, i) => {
@@ -152,6 +160,7 @@ export const PharmaCategory = (props) => {
                         sale={
                           product.price - (product.price * product.sale) / 100
                         }
+                        numSale={product.sale}
                       />
                     );
                   })}

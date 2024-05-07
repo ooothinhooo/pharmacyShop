@@ -3,10 +3,13 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Pagination } from "antd";
+import { createPortal } from "react-dom";
+import AccountDetail from "./AccountDetail";
 
 const ListAccounts = () => {
   const [accounts, setAccounts] = useState([]);
-
+  const [show, setShow] = useState(false);
+  const [updateAccount, setUpdateAccount] = useState(null);
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
 
@@ -19,6 +22,15 @@ const ListAccounts = () => {
   useEffect(() => {
     fetchInfo();
   }, []);
+
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleUpdateAccount = (account) => {
+    setUpdateAccount(account);
+    setShow(true);
+  };
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
@@ -47,10 +59,19 @@ const ListAccounts = () => {
                   <p>{account.username}</p>
                   <p>{account.password}</p>
                   <p>{new Date(account.created_date).toLocaleDateString()}</p>
-                  <button className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white">
+                  <button
+                    onClick={() => handleUpdateAccount(account)}
+                    className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
+                  >
                     Chỉnh sửa
                   </button>
-                  <button className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white">
+                  <button
+                    onClick={() => {
+                      handleShow();
+                      setUpdateAccount(null);
+                    }}
+                    className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
+                  >
                     Xem chi tiết
                   </button>
                   <button className="hover:text-primaryColor">
@@ -70,6 +91,15 @@ const ListAccounts = () => {
             responsive={true}
           />
         }
+
+        {show &&
+          createPortal(
+            <AccountDetail
+              onClose={() => setShow(false)}
+              updateAccount={updateAccount}
+            />,
+            document.body
+          )}
       </div>
     </div>
   );

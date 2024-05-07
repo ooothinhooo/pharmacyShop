@@ -47,17 +47,24 @@ const SlideBar = () => {
         </div>
       </Link>
 
-      <Link to={"/listInvoice"} className="decoration-0">
+      {/* <Link to={"/listInvoice"} className="decoration-0">
         <div className="flex justify-center items-center gap-5 mx-5 py-[5px] p-[10px] rounded bg-[#f6f6f6] cursor-pointer">
           <i className="fa-solid fa-list"></i>
           <p>Invoice</p>
         </div>
-      </Link>
+      </Link> */}
 
       <Link to={"/listSuppliers"} className="decoration-0">
         <div className="flex justify-center items-center gap-5 mx-5 py-[5px] p-[10px] rounded bg-[#f6f6f6] cursor-pointer">
           <i className="fa-solid fa-list"></i>
           <p>Suppliers</p>
+        </div>
+      </Link>
+
+      <Link to={"/vouchers"} className="decoration-0">
+        <div className="flex justify-center items-center gap-5 mx-5 py-[5px] p-[10px] rounded bg-[#f6f6f6] cursor-pointer">
+          <i className="fa-solid fa-list"></i>
+          <p>Vouchers</p>
         </div>
       </Link>
     </div>

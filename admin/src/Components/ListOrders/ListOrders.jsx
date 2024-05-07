@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import UpdateStatus from "./UpdateStatus";
+import OrderDetail from "./OrderDetail";
 
 const ListOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,6 +14,7 @@ const ListOrders = () => {
   const pageSize = 5;
 
   const [show, setShow] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const fetchInfo = async () => {
@@ -28,6 +30,10 @@ const ListOrders = () => {
   const handleUpdateStatus = (orderId) => {
     setSelectedOrderId(orderId);
     setShow(true);
+  };
+
+  const handleShowDetails = () => {
+    setShowDetails(true);
   };
 
   console.log(orders);
@@ -83,7 +89,10 @@ const ListOrders = () => {
                       </button>
                     )}
                   </div>
-                  <button className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white">
+                  <button
+                    onClick={handleShowDetails}
+                    className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
+                  >
                     Xem chi tiết
                   </button>
                 </div>
@@ -109,6 +118,12 @@ const ListOrders = () => {
             orderId={selectedOrderId}
             fetchInfo={fetchInfo}
           />,
+          document.body
+        )}
+
+      {showDetails &&
+        createPortal(
+          <OrderDetail onClose={() => setShowDetails(false)} />,
           document.body
         )}
     </div>
