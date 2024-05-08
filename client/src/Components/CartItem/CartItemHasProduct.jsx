@@ -18,13 +18,13 @@ export const CartItemHasProduct = () => {
     setApplyCoupon(coupon);
   };
 
-  const disableScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
+  // const disableScroll = () => {
+  //   document.body.style.overflow = "hidden";
+  // };
 
-  const enableScroll = () => {
-    document.body.style.overflow = "auto";
-  };
+  // const enableScroll = () => {
+  //   document.body.style.overflow = "auto";
+  // };
   const handleOpen = () => {
     setIsOpen((prevState) => !prevState);
     // disableScroll();
@@ -39,9 +39,10 @@ export const CartItemHasProduct = () => {
     all_products,
     cartItems,
     removeFromCart,
+    addToCart,
     getTotalCartAmountWithsale,
   } = useContext(ShopContext);
-  
+
   // console.log(applyCoupon);
 
   const calculateDiscount = () => {
@@ -72,13 +73,14 @@ export const CartItemHasProduct = () => {
       ).toLocaleString("vi-VN")} đ`;
     }
   };
+
   return (
     <>
       <div className="bg-[#f0f2f5]">
         <div className="container py-4 flex justify-between">
           <div className="cart_items bg-white w-[67%] rounded-xl">
             <div className="p-6">
-              <div className="grid grid-cols-[1fr_4fr_1fr_1fr_1fr_1fr] mb-5 gap-[10px] w-[100%] text-left">
+              <div className="grid grid-cols-[1fr_4fr_1fr_2fr_1fr_0.5fr] mb-5 gap-[10px] w-[100%] text-center">
                 <p className="text-left">Sản Phẩm</p>
                 <p>Tên sản phẩm</p>
                 <p>Đơn giá</p>
@@ -93,7 +95,7 @@ export const CartItemHasProduct = () => {
                   if (cartItems[e.id] > 0) {
                     return (
                       <div
-                        className="w-full py-5 grid grid-cols-[1fr_4fr_1fr_1fr_1fr_1fr] gap-[10px] items-center"
+                        className="w-full py-5 grid grid-cols-[1fr_4fr_1fr_2fr_1fr_0.5fr] gap-[10px] items-center"
                         key={i}
                       >
                         <Link to={`/products/${e.id}`}>
@@ -111,9 +113,26 @@ export const CartItemHasProduct = () => {
                           đ
                         </p>
 
-                        <p>
-                          <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
+                        <p className="flex justify-center items-center">
+                          <button
+                            onClick={() => {
+                              removeFromCart(e.id);
+                            }}
+                            className="cartItem_quantity w-[52px] h-[50px] bg-white"
+                          >
+                            -
+                          </button>
+                          <button className="cartItem_quantity w-[50px] h-[50px] border border-[#ebebeb] bg-white">
                             {cartItems[e.id]}
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              addToCart(e.id);
+                            }}
+                            className="cartItem_quantity w-[52px] h-[50px] bg-white"
+                          >
+                            +
                           </button>
                         </p>
 

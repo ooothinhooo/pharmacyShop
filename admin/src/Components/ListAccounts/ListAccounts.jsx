@@ -10,6 +10,7 @@ const ListAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [show, setShow] = useState(false);
   const [updateAccount, setUpdateAccount] = useState(null);
+  const [accountDetail, setAccountDetail] = useState(null);
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
 
@@ -30,6 +31,11 @@ const ListAccounts = () => {
   const handleUpdateAccount = (account) => {
     setUpdateAccount(account);
     setShow(true);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN");
   };
 
   return (
@@ -58,7 +64,7 @@ const ListAccounts = () => {
                   <p>{account.id}</p>
                   <p>{account.username}</p>
                   <p>{account.password}</p>
-                  <p>{new Date(account.created_date).toLocaleDateString()}</p>
+                  <p>{formatDate(account.created_date)}</p>
                   <button
                     onClick={() => handleUpdateAccount(account)}
                     className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
@@ -69,6 +75,7 @@ const ListAccounts = () => {
                     onClick={() => {
                       handleShow();
                       setUpdateAccount(null);
+                      setAccountDetail(account);
                     }}
                     className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
                   >
@@ -97,6 +104,8 @@ const ListAccounts = () => {
             <AccountDetail
               onClose={() => setShow(false)}
               updateAccount={updateAccount}
+              accountDetail={accountDetail}
+              formatDate={formatDate}
             />,
             document.body
           )}

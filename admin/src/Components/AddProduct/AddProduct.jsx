@@ -9,7 +9,7 @@ const AddProduct = () => {
     type_medicine: "1",
     dosage: "",
     usage: "",
-    unit: "Viên",
+    unit: "",
     packaging: "",
     effect: "",
     instructions: "",
@@ -35,29 +35,37 @@ const AddProduct = () => {
     let formData = new FormData();
     formData.append("product", image);
 
-    await fetch('http://localhost:4000/upload',{
-      method: 'POST',
+    await fetch("http://localhost:4000/upload", {
+      method: "POST",
       headers: {
-        Accept: 'application/json',
+        Accept: "application/json",
       },
       body: formData,
-    }).then((resp) => resp.json()).then((data) => {responseData=data})
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        responseData = data;
+      });
 
     if (responseData.success) {
       product.image = responseData.image_url;
       console.log(product);
-      await fetch('http://localhost:4000/addProduct',{
-        method: 'POST',
+      await fetch("http://localhost:4000/addProduct", {
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(product),
-      }).then((resp) => resp.json()).then((data) => {
-        data.success ? alert('Thêm sản phẩm thành công') : alert('Thêm sản phẩm thất bại')
       })
+        .then((resp) => resp.json())
+        .then((data) => {
+          data.success
+            ? alert("Thêm sản phẩm thành công")
+            : alert("Thêm sản phẩm thất bại");
+        });
     }
-  }
+  };
 
   return (
     <div className="add_product box-border w-full max-w-[800px] py-[30px] px-[50px] my-5 mx-[30px] rounded bg-white">
@@ -74,7 +82,12 @@ const AddProduct = () => {
 
       <div className="add_product-itemField">
         <p>Loại thuốc</p>
-        <select value={productDetail.type_medicine} onChange={changeHandle} name="type_medicine" className="add_product-selector">
+        <select
+          value={productDetail.type_medicine}
+          onChange={changeHandle}
+          name="type_medicine"
+          className="add_product-selector"
+        >
           <option value="1">Dược phẩm</option>
           <option value="2">Chăm sóc sức khoẻ</option>
           <option value="3">Chăm sóc cá nhân</option>
@@ -110,13 +123,20 @@ const AddProduct = () => {
 
       <div className="add_product-itemField">
         <p>Đơn vị tính</p>
-        <select value={productDetail.unit} onChange={changeHandle} name="unit" className="add_product-selector">
+        <input
+          value={productDetail.unit}
+          onChange={changeHandle}
+          type="text"
+          name="unit"
+          placeholder="Đơn vị tính"
+        />
+        {/* <select value={productDetail.unit} onChange={changeHandle} name="unit" className="add_product-selector">
           <option value="Viên">Viên</option>
           <option value="vỉ">vỉ</option>
           <option value="Hộp">Hộp</option>
           <option value="Cái">Cái</option>
           <option value="Tuýp">Tuýp</option>
-        </select>
+        </select> */}
       </div>
 
       <div className="add_product-itemField">
@@ -216,7 +236,12 @@ const AddProduct = () => {
         />
       </div>
 
-      <button onClick={() => {AddProduct()}} className="mt-5 w-[160px] h-[50px] rounded bg-primaryColor border-none cursor-pointer text-white text-[16px] font-medium">
+      <button
+        onClick={() => {
+          AddProduct();
+        }}
+        className="mt-5 w-[160px] h-[50px] rounded bg-primaryColor border-none cursor-pointer text-white text-[16px] font-medium"
+      >
         Thêm
       </button>
     </div>

@@ -49,7 +49,7 @@ const CartChooseCoupon = (props) => {
   };
 
   const formatCurrency = (value) => {
-    if (value === '0') {
+    if (value === "0") {
       return "0K";
     } else if (value >= 1000000) {
       const million = Math.floor(value / 1000000);
@@ -64,6 +64,25 @@ const CartChooseCoupon = (props) => {
     } else {
       return value.toString();
     }
+  };
+
+  const isExpired = (endDate) => {
+    const today = new Date();
+    const expiryDate = new Date(endDate);
+
+    const todayCompare = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const expiryDateCompare = new Date(
+      expiryDate.getFullYear(),
+      expiryDate.getMonth(),
+      expiryDate.getDate()
+    );
+
+    return todayCompare > expiryDateCompare;
   };
 
   // console.log(selectedCoupon);
@@ -135,108 +154,122 @@ const CartChooseCoupon = (props) => {
                         <div className="grid px-4 pb-3 first:pt-4">
                           <div className="grid gap-1">
                             {coupons &&
-                              coupons.map((coupon) => (
-                                <label
-                                  key={coupon.voucher_id}
-                                  htmlFor={coupon.voucher_id}
-                                  className="group grid cursor-pointer grid-cols-[calc(74rem/16)_1fr] shadow"
-                                >
-                                  <div className="relative flex h-[calc(112rem/16)] w-[calc(74rem/16)] items-center justify-center">
-                                    <div className="relative z-[1] h-[calc(21.6rem/16)] w-[calc(54rem/16)]">
-                                      <img src={logo} alt="" />
-                                    </div>
-                                    <div className="absolute inset-0">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        color="#108932"
-                                        fill="none"
-                                        viewBox="0 0 74 112"
-                                        className=" group-data-[disabled=true]:text-neutral-600"
-                                      >
-                                        <mask
-                                          id="mask0_12865_143879"
-                                          width="358"
-                                          height="112"
-                                          x="0"
-                                          y="0"
-                                          maskUnits="userSpaceOnUse"
-                                          style={{ maskType: "alpha" }}
-                                        >
-                                          <path
-                                            fill="#fff"
-                                            fillRule="evenodd"
-                                            d="M0 2a2 2 0 012-2h354a2 2 0 012 2v108a2 2 0 01-2 2H2a2 2 0 01-2-2v-6a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6V2z"
-                                            clipRule="evenodd"
-                                          ></path>
-                                        </mask>
-                                        <g mask="url(#mask0_12865_143879)">
-                                          <path
-                                            fill="currentColor"
-                                            d="M0 2a2 2 0 012-2h72v112H2a2 2 0 01-2-2V2z"
-                                          ></path>
-                                        </g>
-                                      </svg>
-                                    </div>
-                                  </div>
-                                  <div className="content grid h-[calc(112rem/16)] gap-1 rounded-r-[2px] border border-neutral-100 p-3">
-                                    <p className="line-clamp-2 text-sm font-semibold text-neutral-900">
-                                      "{coupon.voucher_code}" Giảm{" "}
-                                      {coupon.voucher_type === "fixed_amount"
-                                        ? formatCurrency(coupon.value)
-                                        : `${coupon.value}%`}{" "}
-                                      cho đơn hàng Online{" "}
-                                      {formatCurrency(coupon.min_order_value)}
-                                    </p>
-                                    <div className="grid content-end gap-1">
-                                      <div className="grid grid-cols-[1fr_calc(70rem/16)] gap-[calc(18rem/16)] ">
-                                        <p className="truncate text-xs leading-5 text-neutral-900 md:text-sm">
-                                          Trị giá:
+                              coupons.map((coupon) => {
+                                const expired = isExpired(
+                                  formatDate(coupon.end_date)
+                                );
+                                console.log(expired);
+                                if (!expired) {
+                                  return (
+                                    <label
+                                      key={coupon.voucher_id}
+                                      htmlFor={coupon.voucher_id}
+                                      className="group grid cursor-pointer grid-cols-[calc(74rem/16)_1fr] shadow"
+                                    >
+                                      <div className="relative flex h-[calc(112rem/16)] w-[calc(74rem/16)] items-center justify-center">
+                                        <div className="relative z-[1] h-[calc(21.6rem/16)] w-[calc(54rem/16)]">
+                                          <img src={logo} alt="" />
+                                        </div>
+                                        <div className="absolute inset-0">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            color="#108932"
+                                            fill="none"
+                                            viewBox="0 0 74 112"
+                                            className=" group-data-[disabled=true]:text-neutral-600"
+                                          >
+                                            <mask
+                                              id="mask0_12865_143879"
+                                              width="358"
+                                              height="112"
+                                              x="0"
+                                              y="0"
+                                              maskUnits="userSpaceOnUse"
+                                              style={{ maskType: "alpha" }}
+                                            >
+                                              <path
+                                                fill="#fff"
+                                                fillRule="evenodd"
+                                                d="M0 2a2 2 0 012-2h354a2 2 0 012 2v108a2 2 0 01-2 2H2a2 2 0 01-2-2v-6a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6v-4a3 3 0 100-6V2z"
+                                                clipRule="evenodd"
+                                              ></path>
+                                            </mask>
+                                            <g mask="url(#mask0_12865_143879)">
+                                              <path
+                                                fill="currentColor"
+                                                d="M0 2a2 2 0 012-2h72v112H2a2 2 0 01-2-2V2z"
+                                              ></path>
+                                            </g>
+                                          </svg>
+                                        </div>
+                                      </div>
+                                      <div className="content grid h-[calc(112rem/16)] gap-1 rounded-r-[2px] border border-neutral-100 p-3">
+                                        <p className="line-clamp-2 text-sm font-semibold text-neutral-900">
+                                          "{coupon.voucher_code}" Giảm{" "}
                                           {coupon.voucher_type ===
                                           "fixed_amount"
-                                            ? Number(
-                                                coupon.value
-                                              ).toLocaleString("vi-VN") + " đ"
-                                            : ` ${coupon.value}%`}
+                                            ? formatCurrency(coupon.value)
+                                            : `${coupon.value}%`}{" "}
+                                          cho đơn hàng Online{" "}
+                                          {formatCurrency(
+                                            coupon.min_order_value
+                                          )}
                                         </p>
-                                        <div className="flex justify-center">
-                                          <input
-                                            className="peer absolute opacity-0"
-                                            id={coupon.voucher_id}
-                                            type="checkbox"
-                                            value={coupon.voucher_code}
-                                            onChange={() =>
-                                              setSelectedCoupon(
-                                                coupon === selectedCoupon
-                                                  ? null
-                                                  : coupon
-                                              )
-                                            }
-                                            checked={
-                                              JSON.stringify(coupon) ===
-                                              JSON.stringify(selectedCoupon)
-                                            }
-                                          />
-                                          <span className='flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-neutral-300 text-white/100 before:contents[""] before:mb-[2px] before:h-[6px] before:w-[10px] before:-rotate-45 before:border-2 before:border-r-0 before:border-t-0 before:border-white group-hover:border-green-600 peer-checked:border-green-600 peer-checked:bg-green-600'></span>
+                                        <div className="grid content-end gap-1">
+                                          <div className="grid grid-cols-[1fr_calc(70rem/16)] gap-[calc(18rem/16)] ">
+                                            <p className="truncate text-xs leading-5 text-neutral-900 md:text-sm">
+                                              Trị giá:
+                                              {coupon.voucher_type ===
+                                              "fixed_amount"
+                                                ? Number(
+                                                    coupon.value
+                                                  ).toLocaleString("vi-VN") +
+                                                  " đ"
+                                                : ` ${coupon.value}%`}
+                                            </p>
+                                            <div className="flex justify-center">
+                                              <input
+                                                className="peer absolute opacity-0"
+                                                id={coupon.voucher_id}
+                                                type="checkbox"
+                                                value={coupon.voucher_code}
+                                                onChange={() =>
+                                                  setSelectedCoupon(
+                                                    coupon === selectedCoupon
+                                                      ? null
+                                                      : coupon
+                                                  )
+                                                }
+                                                checked={
+                                                  JSON.stringify(coupon) ===
+                                                  JSON.stringify(selectedCoupon)
+                                                }
+                                              />
+                                              <span className='flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-neutral-300 text-white/100 before:contents[""] before:mb-[2px] before:h-[6px] before:w-[10px] before:-rotate-45 before:border-2 before:border-r-0 before:border-t-0 before:border-white group-hover:border-green-600 peer-checked:border-green-600 peer-checked:bg-green-600'></span>
+                                            </div>
+                                          </div>
+                                          <div className="grid grid-cols-[1fr_calc(70rem/16)] gap-[calc(18rem/16)] ">
+                                            <p className="text-xs leading-5 text-neutral-700">
+                                              HSD: {formatDate(coupon.end_date)}
+                                            </p>
+                                            <div className="z-[2] flex justify-center">
+                                              <button
+                                                data-size="sm"
+                                                type="button"
+                                                className="relative flex justify-center outline-none bg-transparent font-normal border-0 hover:bg-0 hover:text-green-600 focus:text-green-600 text-sm items-center rounded-lg h-5 p-0 [&amp;>span]:whitespace-nowrap [&amp;>span]:text-xs"
+                                              >
+                                                <span>Chi tiết</span>
+                                              </button>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
-                                      <div className="grid grid-cols-[1fr_calc(70rem/16)] gap-[calc(18rem/16)] ">
-                                        <p className="text-xs leading-5 text-neutral-700">
-                                          HSD: {formatDate(coupon.end_date)}
-                                        </p>
-                                        <div className="z-[2] flex justify-center">
-                                          <button
-                                            data-size="sm"
-                                            type="button"
-                                            className="relative flex justify-center outline-none bg-transparent font-normal border-0 hover:bg-0 hover:text-green-600 focus:text-green-600 text-sm items-center rounded-lg h-5 p-0 [&amp;>span]:whitespace-nowrap [&amp;>span]:text-xs"
-                                          >
-                                            <span>Chi tiết</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </label>
-                              ))}
+                                    </label>
+                                  );
+                                } else {
+                                  return null;
+                                }
+                              })}
 
                             {/* <label
                               htmlFor=":rd0:"

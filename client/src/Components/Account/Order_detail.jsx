@@ -211,7 +211,7 @@ const Order_detail = (props) => {
                           <img src={order.image} alt="img" />
                         </div>
                         <div className="flex justify-between flex-row space-x-4">
-                          <div className="grid flex-1 gap-1">
+                          <div className="grid flex-1 gap-1 w-[485px]">
                             <p className="text-sm font-semibold text-neutral-900 line-clamp-2">
                               {order.name}
                             </p>
@@ -290,6 +290,10 @@ const Order_detail = (props) => {
                   </div>
                   <div className="flex space-x-4">
                     <div className="flex-1">Phí vận chuyển</div>
+                    <div className="font-semibold">{shippingFee} đ</div>
+                  </div>
+                  <div className="flex space-x-4">
+                    <div className="flex-1">Mã giảm giá</div>
                     <div className="font-semibold">{shippingFee} đ</div>
                   </div>
                 </div>

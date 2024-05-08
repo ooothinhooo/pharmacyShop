@@ -8,6 +8,7 @@ const ListProduct = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [show, setShow] = useState(false);
   const [productToUpdate, setProductToUpdate] = useState(null);
+  const [productDetail, setProductDetail] = useState(null);
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
 
@@ -83,6 +84,7 @@ const ListProduct = () => {
                     onClick={() => {
                       handleShow();
                       setProductToUpdate(null);
+                      setProductDetail(product);
                     }}
                     className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
                   >
@@ -123,6 +125,7 @@ const ListProduct = () => {
           <ProductDetail
             onClose={() => setShow(false)}
             productToUpdate={productToUpdate}
+            productDetail={productDetail}
           />,
           document.body
         )}
