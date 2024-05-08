@@ -1,10 +1,19 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
+import axios from "axios";
 import React from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
-const AccountDetail = ({ onClose, updateAccount, accountDetail, formatDate }) => {
+const AccountDetail = ({
+  onClose,
+  updateAccount,
+  accountDetail,
+  formatDate,
+  fetchInfo,
+}) => {
   const [upAccount, setUpAccount] = useState({
     id: updateAccount ? updateAccount.id : "",
     username: updateAccount ? updateAccount.username : "",
@@ -12,14 +21,35 @@ const AccountDetail = ({ onClose, updateAccount, accountDetail, formatDate }) =>
     created_date: updateAccount ? updateAccount.created_date : "",
   });
   const handleUpdateAccount = async () => {
-    console.log("Add Account");
+    console.log(upAccount);
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/updateAccount",
+        upAccount,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        await fetchInfo();
+        toast.success(`Account ${upAccount.id} đã được cập nhật!`);
+        onClose();
+      } else {
+        toast.error(`Cập nhật account ${upAccount.id} thất bại`);
+        onClose();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleChange = (e) => {
     setUpAccount({ ...upAccount, [e.target.name]: e.target.value });
   };
-
-  
 
   return (
     <div className=" fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center z-50">
@@ -108,13 +138,18 @@ const AccountDetail = ({ onClose, updateAccount, accountDetail, formatDate }) =>
                     </tr>
 
                     <tr className="text-left">
-                      <td className="w-[30%] align-top font-semibold">
-                        Ngày tạo:
-                      </td>
                       {updateAccount ? (
-                        <td>{formatDate(upAccount.created_date)}</td>
+                        <>
+                          <td className="w-[30%] align-top font-semibold"></td>
+                          <td></td>
+                        </>
                       ) : (
-                        <td>{formatDate(accountDetail.created_date)}</td>
+                        <>
+                          <td className="w-[30%] align-top font-semibold">
+                            Ngày tạo:
+                          </td>
+                          <td>{formatDate(accountDetail.created_date)}</td>
+                        </>
                       )}
                     </tr>
                   </tbody>

@@ -20,7 +20,7 @@ const ListSuppliers = () => {
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
-      <h1 className="my-5">NHÀ CUNG CẤP</h1>
+      <h1 className="uppercase text-[28px] font-semibold m-5">NHÀ CUNG CẤP</h1>
       <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] w-full gap-4">
         <p>Mã</p>
         <p>Tên nhà cung cấp</p>

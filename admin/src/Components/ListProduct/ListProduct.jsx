@@ -46,7 +46,7 @@ const ListProduct = () => {
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
-      <h1>Các sản phẩm thuốc</h1>
+      <h1 className="uppercase text-[28px] font-semibold m-5">Các sản phẩm thuốc</h1>
       <div className="list_product-format-main">
         <p>Mã thuốc</p>
         <p>Thuốc</p>
@@ -62,6 +62,7 @@ const ListProduct = () => {
         <hr />
         {allProducts.length > 0 &&
           allProducts
+            .sort((a, b) => a.id - b.id)
             .slice((current - 1) * pageSize, current * pageSize)
             .map((product, index) => {
               return (

@@ -1,16 +1,20 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Pagination } from "antd";
+import { Modal, Pagination } from "antd";
 import { createPortal } from "react-dom";
 import AccountDetail from "./AccountDetail";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Toast from "../util/Toast/Toast";
 
 const ListAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [show, setShow] = useState(false);
   const [updateAccount, setUpdateAccount] = useState(null);
   const [accountDetail, setAccountDetail] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
 
@@ -38,9 +42,55 @@ const ListAccounts = () => {
     return date.toLocaleDateString("vi-VN");
   };
 
+  const handleDeleteAccount = useCallback(async (id) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/deleteAccount",
+        { id: id },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        await fetchInfo();
+        toast.success(`Account ${id} đã được xóa!`);
+      } else {
+        toast.error(`Xóa account ${id} thất bại`);
+      }
+    } catch (error) {
+      console.error("Xóa account thất bại:", error.message);
+      toast.error(`Xóa account ${id} thất bại`);
+    } finally {
+      setAccountToDelete(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (accountToDelete !== null) {
+      Modal.confirm({
+        title: "Xác nhận xóa",
+        content: "Bạn có chắc muốn xóa account này không?",
+        okText: "Xóa",
+        okType: "danger",
+        cancelText: "Hủy",
+        onOk() {
+          handleDeleteAccount(accountToDelete);
+        },
+      });
+    }
+  }, [accountToDelete, handleDeleteAccount]);
+
+  const confirmDelete = (accountId) => {
+    setAccountToDelete(accountId);
+  };
+
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
-      <h1 className="my-5">TÀI KHOẢN</h1>
+      <h1 className="uppercase text-[28px] font-semibold m-5">TÀI KHOẢN</h1>
       <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_0.6fr_0.6fr_0.5fr] w-full gap-4">
         <p>Mã</p>
         <p>Tên tài khoản</p>
@@ -54,6 +104,7 @@ const ListAccounts = () => {
         <hr />
         {accounts.length > 0 &&
           accounts
+            .sort((a, b) => a.id - b.id)
             .slice((current - 1) * pageSize, current * pageSize)
             .map((account, index) => {
               return (
@@ -81,7 +132,12 @@ const ListAccounts = () => {
                   >
                     Xem chi tiết
                   </button>
-                  <button className="hover:text-primaryColor">
+                  <button
+                    onClick={() => {
+                      confirmDelete(account.id);
+                    }}
+                    className="hover:text-primaryColor"
+                  >
                     <i className="fa-solid fa-trash cursor-pointer m-auto"></i>
                   </button>
                 </div>
@@ -106,9 +162,12 @@ const ListAccounts = () => {
               updateAccount={updateAccount}
               accountDetail={accountDetail}
               formatDate={formatDate}
+              fetchInfo={fetchInfo}
             />,
             document.body
           )}
+
+        <Toast />
       </div>
     </div>
   );

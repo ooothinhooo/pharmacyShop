@@ -1,21 +1,29 @@
+/* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-toastify";
+import Toast from "../util/Toast/Toast";
+import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
-const AddVoucher = ({ onClose, fetchInfo }) => {
+const AddVoucher = ({ onClose, fetchInfo, editVoucher }) => {
   const [voucher, setVoucher] = useState({
-    code: "",
-    value: "",
-    min_order_value: "0",
-    apply: "0 đồng",
-    type: "fixed_amount",
-    date_start: new Date().toLocaleDateString(),
-    date_end: new Date().toLocaleDateString(),
-    quantity: "",
+    code: editVoucher ? editVoucher.voucher_code : "",
+    value: editVoucher ? editVoucher.value : "",
+    min_order_value: editVoucher ? editVoucher.min_order_value : "0",
+    apply: editVoucher ? editVoucher.apply : "0 đồng",
+    type: editVoucher ? editVoucher.voucher_type : "fixed_amount",
+    date_start: editVoucher
+      ? editVoucher.start_date
+      : new Date().toLocaleDateString(),
+    date_end: editVoucher
+      ? editVoucher.end_date
+      : new Date().toLocaleDateString(),
+    quantity: editVoucher ? editVoucher.quantity : "",
   });
+  console.log(voucher);
 
   const handleChange = (e) => {
     if (e.target.name === "apply" && e.target.value !== "trên 0 đồng") {
@@ -69,11 +77,42 @@ const AddVoucher = ({ onClose, fetchInfo }) => {
       });
   };
 
+  const handleUpdateVoucher = async (id) => {
+    console.log(voucher);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/updateVoucher",
+        { id: id, voucher: voucher },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(`Voucher ${id} đã được sửa!`);
+        await fetchInfo();
+        // onClose();
+      } else {
+        toast.error(`Sửa voucher ${id} thất bại`);
+        // onClose();
+      }
+    } catch (error) {
+      console.error("Sửa voucher thất bại:", error.message);
+      toast.error(`Sửa voucher ${id} thất bại`);
+    }
+  };
+
   return (
     <div className="fixed z-30 top-0 left-0 right-0 bottom-0 bg-[rgba(0,_0,_0,_0.3)] flex justify-center items-center">
       <div className="bg-white min-w-[300px] max-w-[600px] max-h-[calc(100vh-100px)] h-auto rounded-md px-4 w-full">
         <div className="flex justify-start items-center py-[10px] relative">
-          <h1 className="text-[24px] font-medium">Thêm mã voucher</h1>
+          <h1 className="text-[24px] font-medium">
+            {editVoucher ? "Chỉnh sửa mã" : "Thêm mã voucher"}
+          </h1>
           <i
             onClick={onClose}
             className="fa-solid fa-xmark text-[#000] text-[24px] absolute right-[0px] top-[10px] cursor-pointer"
@@ -99,6 +138,7 @@ const AddVoucher = ({ onClose, fetchInfo }) => {
           <label htmlFor="value" className="block font-medium">
             <span>Giá trị:</span>
           </label>
+
           <input
             id="value"
             type="text"
@@ -221,14 +261,25 @@ const AddVoucher = ({ onClose, fetchInfo }) => {
             Quay lại
           </button>
 
-          <button
-            className="border py-2 px-3 rounded-md mr-4 bg-neutral-200 font-medium hover:bg-neutral-300"
-            onClick={() => handleAddVoucher()}
-          >
-            Thêm
-          </button>
+          {editVoucher ? (
+            <button
+              className="border py-2 px-3 rounded-md mr-4 bg-neutral-200 font-medium hover:bg-neutral-300"
+              onClick={() => handleUpdateVoucher(editVoucher.voucher_id)}
+            >
+              Sửa
+            </button>
+          ) : (
+            <button
+              className="border py-2 px-3 rounded-md mr-4 bg-neutral-200 font-medium hover:bg-neutral-300"
+              onClick={() => handleAddVoucher()}
+            >
+              Thêm
+            </button>
+          )}
         </div>
       </div>
+
+      <Toast />
     </div>
   );
 };

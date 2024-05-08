@@ -34,9 +34,9 @@ const ListMedicineTypes = () => {
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
-      <div className="flex w-full justify-between items-center my-5">
+      <div className="flex w-full justify-between items-center">
         <div></div>
-        <h1>Danh mục</h1>
+        <h1 className="uppercase text-[28px] font-semibold m-5">Danh mục</h1>
         <button
           onClick={() => {
             handleShow();

@@ -6,7 +6,7 @@ import AddProduct from "../../Components/AddProduct/AddProduct";
 import ListProduct from "../../Components/ListProduct/ListProduct";
 import ListMedicineTypes from "../../Components/ListMedicineTypes/ListMedicineTypes";
 import ListAccounts from "../../Components/ListAccounts/ListAccounts";
-import ListCustomer from "../../Components/LitstCustomer/ListCustomer";
+import ListCustomer from "../../Components/ListCustomer/ListCustomer";
 import ListOrders from "../../Components/ListOrders/ListOrders";
 // import ListInvoice from "../../Components/ListInvoice/ListInvoice";
 import ListSuppliers from "../../Components/ListSuppliers/ListSuppliers";
@@ -19,7 +19,7 @@ const Admin = () => {
     <div className="admin flex">
       <SlideBar />
       <Routes>
-        <Route path="/" element={<AddProduct />}/>
+        <Route path="/" element={<ListProduct />}/>
         <Route path="/addProduct"  element={<AddProduct />}/>
         <Route path="/listProduct"  element={<ListProduct />}/>
         <Route path="/medicineTypes"  element={<ListMedicineTypes />}/>

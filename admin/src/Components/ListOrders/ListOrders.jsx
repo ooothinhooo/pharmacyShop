@@ -6,6 +6,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import UpdateStatus from "./UpdateStatus";
 import OrderDetail from "./OrderDetail";
+import Toast from "../util/Toast/Toast";
 
 const ListOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -40,7 +41,7 @@ const ListOrders = () => {
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
-      <h1 className="my-5">ĐƠN HÀNG</h1>
+      <h1 className="uppercase text-[28px] font-semibold m-5">ĐƠN HÀNG</h1>
       <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] w-full gap-4">
         <p>Mã</p>
         <p>Tên Khách hàng</p>
@@ -52,6 +53,7 @@ const ListOrders = () => {
         <hr />
         {orders.length > 0 &&
           orders
+            .sort((a, b) => a.order_id - b.order_id)
             .slice((current - 1) * pageSize, current * pageSize)
             .map((order, index) => {
               return (
@@ -126,6 +128,8 @@ const ListOrders = () => {
           <OrderDetail onClose={() => setShowDetails(false)} />,
           document.body
         )}
+
+      <Toast />
     </div>
   );
 };

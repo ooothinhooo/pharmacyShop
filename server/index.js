@@ -178,10 +178,53 @@ app.get("/allAccounts", async (req, res) => {
   }
 });
 
+// Create update account endpoint
+app.post("/updateAccount", async (req, res) => {
+  let { id, username, password } = req.body;
+
+  console.log(req.body);
+  console.log("id: " + id);
+  console.log("username: " + username);
+  console.log("password: " + password);
+
+  try {
+    db.query("UPDATE accounts SET username = $1, password = $2 WHERE id = $3", [
+      username,
+      password,
+      id,
+    ]);
+
+    res.json({
+      success: true,
+      username: username,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create delete account endpoint
+app.post("/deleteAccount", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    db.query("DELETE FROM customers WHERE id_user = $1", [id]);
+    db.query("DELETE FROM accounts WHERE id = $1", [id]);
+    res.json({
+      success: true,
+      message: "Account deleted",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create get all customers endpoint
 app.get("/allCustomers", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM customers");
+    const result = await db.query(
+      "SELECT * FROM customers JOIN accounts ON customers.id_user = accounts.id LEFT JOIN addresses_user ON accounts.id = addresses_user.ida WHERE addresses_user.default_address = 1 OR addresses_user.default_address IS NULL"
+    );
     res.json({
       success: true,
       customers: result.rows,
@@ -308,6 +351,78 @@ app.post("/addVoucher", async (req, res) => {
     res.json({
       success: true,
       code: code,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// create endpoint for delete voucher
+app.post("/deleteVoucher", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    db.query("DELETE FROM vouchers WHERE voucher_id = $1", [id]);
+    res.json({
+      success: true,
+      message: "Voucher deleted",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// create endpoint for update status voucher
+app.post("/updateStatusVoucher", async (req, res) => {
+  const { id, status } = req.body;
+
+  try {
+    db.query("UPDATE vouchers SET status = $1 WHERE voucher_id = $2", [
+      status,
+      id,
+    ]);
+    res.json({
+      success: true,
+      message: "Status updated",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// create endpoint for update voucher
+app.post("/updateVoucher", async (req, res) => {
+  let { id, voucher } = req.body;
+
+  console.log(req.body);
+  console.log("code: " + voucher.code);
+  console.log("value: " + voucher.value);
+  console.log("min_order_value: " + voucher.min_order_value);
+  console.log("voucher_type: " + voucher.type);
+  console.log("start_date: " + voucher.date_start);
+  console.log("end_date: " + voucher.date_end);
+  console.log("quantity: " + voucher.quantity);
+  console.log("apply: " + voucher.apply);
+  console.log("id: " + id);
+  try {
+    db.query(
+      "UPDATE vouchers SET voucher_code = $1, value = $2, min_order_value = $3, voucher_type = $4, start_date = $5, end_date = $6, quantity = $7, apply = $8 WHERE voucher_id = $9",
+      [
+        voucher.code,
+        voucher.value,
+        voucher.min_order_value,
+        voucher.type,
+        voucher.date_start,
+        voucher.date_end,
+        voucher.quantity,
+        voucher.apply,
+        id,
+      ]
+    );
+
+    res.json({
+      success: true,
+      code: voucher.code,
     });
   } catch (err) {
     console.log(err);
