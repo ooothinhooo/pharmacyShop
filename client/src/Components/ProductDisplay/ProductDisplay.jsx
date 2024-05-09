@@ -1,9 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ShopContext } from "../../Context/ShopContext";
+import { createPortal } from "react-dom";
+import { LoginSignup } from "../../Pages/LoginSignup";
 
 export const ProductDisplay = (props) => {
   const { addToCart } = useContext(ShopContext);
   const { product } = props;
+  const [show, setShow] = useState(false);
+  const [stateLogin, setStateLogin] = useState("");
+
   return (
     <div>
       <div className="productDetail">
@@ -49,7 +54,7 @@ export const ProductDisplay = (props) => {
               <div className="productInfo_right-body pb-5">
                 <div className="flex justify-between">
                   <div></div>
-                  <p>Mã: {product.id}</p>
+                  <p>Mã: {product.idm}</p>
                 </div>
 
                 <div className="bg-[#eee] py--[5px] px-6 h-[fit-content] rounded-xl mt-3">
@@ -57,7 +62,11 @@ export const ProductDisplay = (props) => {
                     {product.sale > 0 ? (
                       <>
                         <div className="text-green-600 text-[28px] font-bold mt-4 mr-5">
-                          {(product.price * (1 - product.sale / 100)).toLocaleString("vi-VN")}đ
+                          {(
+                            product.price *
+                            (1 - product.sale / 100)
+                          ).toLocaleString("vi-VN")}
+                          đ
                         </div>
                         <div className="text-gray-400 line-through text-[18px] font-bold mr-5">
                           {Number(product.price).toLocaleString("vi-VN")}đ
@@ -111,15 +120,28 @@ export const ProductDisplay = (props) => {
                   </table>
                 </div>
                 <div className="productInfo_body-right">
-                  <button
-                    onClick={() => {
-                      addToCart(product.id);
-                    }}
-                    className="add-cart"
-                  >
-                    <i className="fa-solid fa-cart-shopping mr-3"></i>Thêm giỏ
-                    hàng
-                  </button>
+                  {localStorage.getItem("auth-token") ? (
+                    <button
+                      onClick={() => {
+                        addToCart(product.idm);
+                      }}
+                      className="add-cart"
+                    >
+                      <i className="fa-solid fa-cart-shopping mr-3"></i>Thêm giỏ
+                      hàng
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setShow(true);
+                        setStateLogin("Đăng nhập");
+                      }}
+                      className="add-cart"
+                    >
+                      <i className="fa-solid fa-cart-shopping mr-3"></i>Thêm giỏ
+                      hàng
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -142,6 +164,12 @@ export const ProductDisplay = (props) => {
         </div>
         <div className="productDescription"></div>
       </div>
+
+      {show &&
+        createPortal(
+          <LoginSignup onClose={() => setShow(false)} />,
+          document.body
+        )}
     </div>
   );
 };

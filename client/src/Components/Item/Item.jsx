@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Item = (props) => {
   const { all_products } = useContext(ShopContext);
-  const product = all_products.find((product) => product.id === props.id);
+  const product = all_products.find((product) => product.idm === props.id);
 
   const navigate = useNavigate();
   const handleNavigateProductDetail = (idProduct) => {
@@ -12,17 +12,17 @@ export const Item = (props) => {
   };
 
   return (
-    <div class="relative p-2">
+    <div className="relative p-2">
       <div
         onClick={() => handleNavigateProductDetail(props.id)}
-        class="product-card"
+        className="product-card"
       >
-        <div class="h-full overflow-hidden rounded-lg border bg-white shadow-sm">
-          <div class="product-card-image">
+        <div className="h-full overflow-hidden rounded-lg border bg-white shadow-sm">
+          <div className="product-card-image">
             <div className="relative">
               <img
                 onClick={window.scroll(0, 0)}
-                class="max-h-[100%] max-w-[100%] object-contain"
+                className="max-h-[100%] max-w-[100%] object-contain"
                 src={props.image}
                 alt="product"
                 width="500"
@@ -31,22 +31,22 @@ export const Item = (props) => {
               {props.sale < props.price && <span className="absolute top-2 left-2 bg-red-400 py-[3px] px-[10px] text-[13px] font-bold text-white rounded-xl">
                 {props.numSale}%
               </span>}
-              <div class="absolute bottom-0 left-0 flex h-[26px] w-full"></div>
+              <div className="absolute bottom-0 left-0 flex h-[26px] w-full"></div>
             </div>
           </div>
-          <div class="p-2 pb-1 font-medium">
+          <div className="p-2 pb-1 font-medium">
             <div>
-              <h3 class="line-clamp-2 h-10 text-sm font-semibold">
+              <h3 className="line-clamp-2 h-10 text-sm font-semibold">
                 {props.name}
               </h3>
             </div>
-            <div class="my-1 items-center whitespace-nowrap">
-              <del class="block h-5 text-sm font-semibold text-neutral-600">
+            <div className="my-1 items-center whitespace-nowrap">
+              <del className="block h-5 text-sm font-semibold text-neutral-600">
                 {props.sale < props.price && (
                   <div>{Number(props.price).toLocaleString("vi-VN")}đ</div>
                 )}
               </del>
-              <span class="mt-[2px] block h-6 text-base font-bold text-green-600">
+              <span className="mt-[2px] block h-6 text-base font-bold text-green-600">
                 {Number(props.sale).toLocaleString("vi-VN")}đ
               </span>
             </div>

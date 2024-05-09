@@ -92,17 +92,17 @@ export const CartItemHasProduct = () => {
               <div>
                 <hr />
                 {all_products.map((e, i) => {
-                  if (cartItems[e.id] > 0) {
+                  if (cartItems[e.idm] > 0) {
                     return (
                       <div
                         className="w-full py-5 grid grid-cols-[1fr_4fr_1fr_2fr_1fr_0.5fr] gap-[10px] items-center"
                         key={i}
                       >
-                        <Link to={`/products/${e.id}`}>
+                        <Link to={`/products/${e.idm}`}>
                           <img src={e.image} alt="" className="w-[72px]" />
                         </Link>
 
-                        <Link to={`/products/${e.id}`}>
+                        <Link to={`/products/${e.idm}`}>
                           <p className="text-left product_name">{e.name}</p>
                         </Link>
 
@@ -116,19 +116,19 @@ export const CartItemHasProduct = () => {
                         <p className="flex justify-center items-center">
                           <button
                             onClick={() => {
-                              removeFromCart(e.id);
+                              removeFromCart(e.idm);
                             }}
                             className="cartItem_quantity w-[52px] h-[50px] bg-white"
                           >
                             -
                           </button>
                           <button className="cartItem_quantity w-[50px] h-[50px] border border-[#ebebeb] bg-white">
-                            {cartItems[e.id]}
+                            {cartItems[e.idm]}
                           </button>
 
                           <button
                             onClick={() => {
-                              addToCart(e.id);
+                              addToCart(e.idm);
                             }}
                             className="cartItem_quantity w-[52px] h-[50px] bg-white"
                           >
@@ -140,7 +140,7 @@ export const CartItemHasProduct = () => {
                           {(
                             e.price *
                             (1 - e.sale / 100) *
-                            cartItems[e.id]
+                            cartItems[e.idm]
                           ).toLocaleString("vi-VN")}
                           đ
                         </p>
@@ -148,7 +148,7 @@ export const CartItemHasProduct = () => {
                         <p
                           className="text-center"
                           onClick={() => {
-                            removeFromCart(e.id);
+                            removeFromCart(e.idm);
                           }}
                         >
                           <i className="fa-solid fa-trash"></i>

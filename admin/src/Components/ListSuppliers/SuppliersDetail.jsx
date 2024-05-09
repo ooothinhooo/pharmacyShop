@@ -1,45 +1,48 @@
 /* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-import { useState } from "react";
-import { toast } from "react-toastify";
+/* eslint-disable no-unused-vars */
 import axios from "axios";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-// eslint-disable-next-line react/prop-types
-const UpdateMedicineTypes = ({ onClose, updateMedicineType, fetchInfo }) => {
-  const [updateType, setUpdateType] = useState({
-    id: updateMedicineType ? updateMedicineType.idtype : "",
-    name: updateMedicineType ? updateMedicineType.nametype : "",
+const SuppliersDetail = ({ onClose, updateSupplier, fetchInfo }) => {
+  const [supplier, setSupplier] = useState({
+    name: updateSupplier ? updateSupplier.sup_name : "",
+    phone: updateSupplier ? updateSupplier.sup_phone : "",
+    address: updateSupplier ? updateSupplier.sup_address : "",
   });
 
-  const handleAddMedicineType = async () => {
-    console.log(updateType);
-    await fetch("http://localhost:4000/addType", {
+  const handleChange = (e) => {
+    setSupplier({ ...supplier, [e.target.name]: e.target.value });
+  };
+
+  const handleAddSupplier = async () => {
+    console.log(supplier);
+
+    await fetch("http://localhost:4000/addSupplier", {
       method: "POST",
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updateType),
+      body: JSON.stringify(supplier),
     })
-      .then((resp) => resp.json())
+      .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          toast.success(`Thêm danh mục thành công!`);
+          alert("Thêm nhà cung cấp thành công thành công");
           fetchInfo();
           onClose();
         } else {
-          toast.error(`Thêm danh mục thất bại!`);
-          onClose();
+          alert("Thêm nhà cung cấp thất bại");
         }
       });
   };
-  const handleUpdateMedicineType = async () => {
-    console.log(updateType);
+
+  const handleUpdateSupplier = async () => {
+    console.log(supplier);
     try {
       const response = await axios.post(
-        "http://localhost:4000/updateType",
-        updateType,
+        "http://localhost:4000/updateSupplier",
+        { id: updateSupplier.id, supplier: supplier },
         {
           headers: {
             Accept: "application/json",
@@ -49,33 +52,26 @@ const UpdateMedicineTypes = ({ onClose, updateMedicineType, fetchInfo }) => {
       );
 
       if (response.data.success) {
-        toast.success(`Câp nhật danh mục thành công!`);
-        await fetchInfo();
+        toast.success("Cập nhật nhà cung cấp thành công");
+        fetchInfo();
         onClose();
       } else {
-        toast.error(`Cập nhật danh mục thất bại`);
-        onClose();  
+        toast.error("Cập nhật nhà cung cấp thất bại");
+        onClose();
       }
     } catch (error) {
-      console.error("Cập nhật thất bại:", error.message);
-      toast.error(`Cập nhật danh mục thất bại`);
+      console.error("Cập nhật nhà cung cấp thất bại:", error.message);
+      toast.success("Cập nhật nhà cung cấp thất bại");
     }
-  };
-
-  const handleChange = (event) => {
-    setUpdateType({
-      ...updateType,
-      [event.target.name]: event.target.value,
-    });
   };
   return (
     <div className=" fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center z-50">
-      <div className="max-w-[650px] w-[500px] relative">
+      <div className="max-w-[650px] w-[600px] relative">
         <div className="bg-white rounded grid gap-2">
           {/* <div className="absolute w-full flex-col space-y-1.5 flex mt-2 md:mt-0 justify-center px-4 py-2.5 md:px-6 md:pt-6 md:pb-4"></div> */}
           <div className="flex justify-start items-center px-[10px] relative">
             <h1 className="text-[24px] font-medium">
-              {updateMedicineType ? "Cập nhật danh mục" : "Thêm danh mục"}
+              {updateSupplier ? "Cập nhật nhà cung cấp" : "Thêm nhà cung cấp"}
             </h1>
           </div>
           <div className="border-b"></div>
@@ -105,42 +101,58 @@ const UpdateMedicineTypes = ({ onClose, updateMedicineType, fetchInfo }) => {
               >
                 <table className="w-full border-separate [border-spacing:0_10px]">
                   <tbody>
-                    {updateMedicineType ? (
-                      <tr className="text-left">
-                        <td className="w-[30%] align-top font-semibold">
-                          Mã Thuốc:
-                        </td>
-                        <td>{updateType.id}</td>
-                      </tr>
-                    ) : (
-                      <></>
-                    )}
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Tên nhà cung cấp:
+                      </td>
+
+                      <td>
+                        <input
+                          id="quantity"
+                          type="text"
+                          name="name"
+                          placeholder="Nhập tên"
+                          value={supplier.name}
+                          onChange={handleChange}
+                          className="border-b ml-5 outline-none"
+                        />
+                      </td>
+                    </tr>
 
                     <tr className="text-left">
                       <td className="w-[30%] align-top font-semibold">
-                        Tên danh mục:
+                        Địa chỉ:
                       </td>
-                      {updateMedicineType ? (
-                        <td>
-                          <input
-                            type="text"
-                            name="name"
-                            className="border-b outline-none w-full"
-                            value={updateType.name}
-                            onChange={handleChange}
-                          />
-                        </td>
-                      ) : (
-                        <td>
-                          <input
-                            type="text"
-                            name="name"
-                            className="border-b outline-none w-full"
-                            value={updateType.name}
-                            onChange={handleChange}
-                          />
-                        </td>
-                      )}
+
+                      <td>
+                        <input
+                          id="quantity"
+                          type="text"
+                          name="address"
+                          placeholder="Nhập địa chỉ"
+                          value={supplier.address}
+                          onChange={handleChange}
+                          className="border-b ml-5 outline-none"
+                        />
+                      </td>
+                    </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Số điện thoại:
+                      </td>
+
+                      <td>
+                        <input
+                          id="quantity"
+                          type="text"
+                          name="phone"
+                          placeholder="Nhập số điện thoại"
+                          value={supplier.phone}
+                          onChange={handleChange}
+                          className="border-b ml-5 outline-none"
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -172,16 +184,16 @@ const UpdateMedicineTypes = ({ onClose, updateMedicineType, fetchInfo }) => {
             >
               Quay lại
             </button>
-            {updateMedicineType ? (
+            {updateSupplier ? (
               <button
-                onClick={() => handleUpdateMedicineType()}
+                onClick={() => handleUpdateSupplier()}
                 className="border py-2 px-4 rounded-md bg-green-600 text-white font-medium hover:bg-green-800"
               >
                 Cập nhật
               </button>
             ) : (
               <button
-                onClick={() => handleAddMedicineType()}
+                onClick={() => handleAddSupplier()}
                 className="border py-2 px-4 rounded-md bg-green-600 text-white font-medium hover:bg-green-800"
               >
                 Thêm
@@ -194,4 +206,4 @@ const UpdateMedicineTypes = ({ onClose, updateMedicineType, fetchInfo }) => {
   );
 };
 
-export default UpdateMedicineTypes;
+export default SuppliersDetail;

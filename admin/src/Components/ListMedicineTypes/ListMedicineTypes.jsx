@@ -1,14 +1,19 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { Pagination } from "antd";
+import { Pagination, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import UpdateMedicineTypes from "./UpdateMedicineTypes";
+import { useCallback } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Toast from "../util/Toast/Toast";
 
 const ListMedicineTypes = () => {
   const [types, setTypes] = useState([]);
   const [show, setShow] = useState(false);
   const [updateMedicineType, setUpdateMedicineType] = useState(null);
+  const [delateMedicineType, setDeleteMedicineType] = useState(null);
 
   const [current, setCurrent] = useState(1);
   const pageSize = 5;
@@ -30,6 +35,52 @@ const ListMedicineTypes = () => {
   const handleUpdate = (type) => {
     setUpdateMedicineType(type);
     setShow(true);
+  };
+
+  const handleDeleteType = useCallback(async (id) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/deleteType",
+        { id: id },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        await fetchInfo();
+        toast.success(`Danh mục ${id} đã được xóa!`);
+      } else {
+        toast.error(`Xóa danh mục ${id} thất bại`);
+      }
+    } catch (error) {
+      console.error("Xóa danh mục thất bại:", error.message);
+      toast.error(`Xóa danh mục ${id} thất bại`);
+    } finally {
+      setDeleteMedicineType(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (delateMedicineType !== null) {
+      Modal.confirm({
+        title: "Xác nhận xóa",
+        content: "Bạn có chắc muốn xóa account này không?",
+        okText: "Xóa",
+        okType: "danger",
+        cancelText: "Hủy",
+        onOk() {
+          handleDeleteType(delateMedicineType);
+        },
+      });
+    }
+  }, [delateMedicineType, handleDeleteType]);
+
+  const confirmDelete = (typeId) => {
+    setDeleteMedicineType(typeId);
   };
 
   return (
@@ -72,7 +123,10 @@ const ListMedicineTypes = () => {
                   >
                     Chỉnh sửa
                   </button>
-                  <button className="hover:text-primaryColor">
+                  <button
+                    onClick={() => confirmDelete(type.idtype)}
+                    className="hover:text-primaryColor"
+                  >
                     <i className="fa-solid fa-trash cursor-pointer m-auto"></i>
                   </button>
                 </div>
@@ -95,9 +149,12 @@ const ListMedicineTypes = () => {
             <UpdateMedicineTypes
               onClose={() => setShow(false)}
               updateMedicineType={updateMedicineType}
+              fetchInfo={fetchInfo}
             />,
             document.body
           )}
+
+        <Toast />
       </div>
     </div>
   );

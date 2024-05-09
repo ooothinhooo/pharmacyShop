@@ -264,8 +264,7 @@ export const NavbarSearch = () => {
           </div>
         ) : (
           <div className="nav_account 1lg:flex justify-between min-w-[150px] text-white">
-            <Link
-              to={"#"}
+            <div
               className="border-r pr-2"
               onClick={() => {
                 setShowModal(true);
@@ -273,9 +272,8 @@ export const NavbarSearch = () => {
               }}
             >
               Đăng ký
-            </Link>
-            <Link
-              to={"#"}
+            </div>
+            <div
               className="px-2"
               onClick={() => {
                 setShowModal(true);
@@ -284,7 +282,7 @@ export const NavbarSearch = () => {
             >
               Đăng nhập
               <i className="fa-regular fa-user pl-2"></i>
-            </Link>
+            </div>
           </div>
         )}
       </div>

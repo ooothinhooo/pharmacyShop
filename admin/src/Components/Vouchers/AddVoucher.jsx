@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
-import Toast from "../util/Toast/Toast";
 import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
@@ -95,10 +94,10 @@ const AddVoucher = ({ onClose, fetchInfo, editVoucher }) => {
       if (response.data.success) {
         toast.success(`Voucher ${id} đã được sửa!`);
         await fetchInfo();
-        // onClose();
+        onClose();
       } else {
         toast.error(`Sửa voucher ${id} thất bại`);
-        // onClose();
+        onClose();
       }
     } catch (error) {
       console.error("Sửa voucher thất bại:", error.message);
@@ -278,8 +277,6 @@ const AddVoucher = ({ onClose, fetchInfo, editVoucher }) => {
           )}
         </div>
       </div>
-
-      <Toast />
     </div>
   );
 };

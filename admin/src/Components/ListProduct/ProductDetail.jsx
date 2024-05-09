@@ -3,12 +3,20 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import upload_area from "../../assets/upload_area.svg";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
-const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
+const ProductDetail = ({
+  productToUpdate,
+  onClose,
+  productDetail,
+  fetchInfo,
+}) => {
   const [typeMedicine, setTypeMedicine] = useState([]);
+  const [imageProduct, setImageProduct] = useState(false);
   const [updateProduct, setUpdateProduct] = useState({
-    id: productToUpdate ? productToUpdate.id : "",
+    id: productToUpdate ? productToUpdate.idm : "",
     name: productToUpdate ? productToUpdate.name : "",
     nametype: productToUpdate ? productToUpdate.idtype : "",
     dosage: productToUpdate ? productToUpdate.dosage : "",
@@ -17,6 +25,11 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
     packaging: productToUpdate ? productToUpdate.packaging : "",
     effect: productToUpdate ? productToUpdate.effect : "",
     description: productToUpdate ? productToUpdate.description : "",
+    price: productToUpdate ? productToUpdate.price : "",
+    sale: productToUpdate ? productToUpdate.sale : "",
+    quantity: productToUpdate ? productToUpdate.quantity : "",
+    image: productToUpdate ? productToUpdate.image : "",
+    instructions: productToUpdate ? productToUpdate.instructions : "",
   });
 
   const handleChange = (event) => {
@@ -38,7 +51,56 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
     fetchTypeMedicine();
   }, []);
 
-  console.log(updateProduct);
+  const imageHandle = (e) => {
+    setImageProduct(e.target.files[0]);
+  };
+
+  const UpdateProduct = async () => {
+    console.log(updateProduct);
+
+    let responseData = {};
+    let product = updateProduct;
+
+    if (imageProduct) {
+      let formData = new FormData();
+      formData.append("product", imageProduct);
+
+      await fetch("http://localhost:4000/upload", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          responseData = data;
+        });
+      if (responseData.success) {
+        product.image = responseData.image_url;
+      }
+    }
+
+    await fetch("http://localhost:4000/updateProduct", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.success) {
+          fetchInfo();
+          toast.success("Câp nhật sản phẩm thành công");
+          onClose();
+        } else {
+          toast.error("Cập nhật sản phẩm thất bại");
+          onClose();
+        }
+      });
+  };
 
   return (
     // <div className="fixed z-30 top-0 left-0 right-0 bottom-0 bg-[rgba(0,_0,_0,_0.3)] flex justify-center items-center">
@@ -127,7 +189,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
           <div className="border-b"></div>
           <div className="grid">
             <div
-              className="overflow-hidden h-full max-h-[calc(100dvh-138px)] px-4 [&>div]:relative md:max-h-[calc(100vh-100px)] md:px-4"
+              className="overflow-hidden h-full max-h-[calc(100dvh-138px)] px-4 [&>div]:relative md:max-h-[calc(100vh-300px)] md:px-4"
               style={{
                 position: "relative",
                 "--radix-scroll-area-corner-width": "0px",
@@ -158,7 +220,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                       {productToUpdate ? (
                         <td>{updateProduct.id}</td>
                       ) : (
-                        <td>{productDetail.id}</td>
+                        <td>{productDetail.idm}</td>
                       )}
                     </tr>
                     <tr className="text-left">
@@ -169,7 +231,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <textarea
                             className="outline outline-1 rounded-md p-1"
-                            name=""
+                            name="name"
                             id=""
                             rows={2}
                             cols={50}
@@ -212,7 +274,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <textarea
                             className="outline outline-1 rounded-md p-1"
-                            name=""
+                            name="dosage"
                             id=""
                             rows={2}
                             cols={50}
@@ -232,7 +294,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <textarea
                             className="outline outline-1 rounded-md p-1"
-                            name=""
+                            name="usage"
                             id=""
                             rows={5}
                             cols={50}
@@ -252,6 +314,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <input
                             type="text"
+                            name="unit"
                             className="border-b outline-none w-full"
                             value={updateProduct.unit}
                             onChange={handleChange}
@@ -269,6 +332,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <input
                             type="text"
+                            name="packaging"
                             className="border-b outline-none w-full"
                             value={updateProduct.packaging}
                             onChange={handleChange}
@@ -286,7 +350,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>
                           <textarea
                             className="outline outline-1 rounded-md p-1"
-                            name=""
+                            name="effect"
                             id=""
                             rows={2}
                             cols={50}
@@ -298,6 +362,86 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         <td>{productDetail.effect}</td>
                       )}
                     </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Hướng dẫn sử dụng:
+                      </td>
+                      {productToUpdate ? (
+                        <td>
+                          <textarea
+                            className="outline outline-1 rounded-md p-1"
+                            name="instructions"
+                            id="instructions"
+                            rows={2}
+                            cols={50}
+                            value={updateProduct.instructions}
+                            onChange={handleChange}
+                          ></textarea>
+                        </td>
+                      ) : (
+                        <td>{productDetail.instructions}</td>
+                      )}
+                    </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Số lượng:
+                      </td>
+                      {productToUpdate ? (
+                        <td>
+                          <input
+                            value={updateProduct.quantity}
+                            onChange={handleChange}
+                            type="text"
+                            name="quantity"
+                            placeholder="Số lượng"
+                            className="border-b outline-none w-full"
+                          />
+                        </td>
+                      ) : (
+                        <td>{productDetail.quantity}</td>
+                      )}
+                    </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">Giá:</td>
+                      {productToUpdate ? (
+                        <td>
+                          <input
+                            value={updateProduct.price}
+                            onChange={handleChange}
+                            type="text"
+                            name="price"
+                            placeholder="Giá"
+                            className="border-b outline-none w-full"
+                          />
+                        </td>
+                      ) : (
+                        <td>{productDetail.price}</td>
+                      )}
+                    </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Giá Sale:
+                      </td>
+                      {productToUpdate ? (
+                        <td>
+                          <input
+                            value={updateProduct.sale}
+                            onChange={handleChange}
+                            type="text"
+                            name="sale"
+                            placeholder="Giảm bao nhiêu phần trăm"
+                            className="border-b outline-none w-full"
+                          />
+                        </td>
+                      ) : (
+                        <td>{productDetail.sale}</td>
+                      )}
+                    </tr>
+
                     <tr className="text-left">
                       <td className="w-[30%] align-top font-semibold">
                         Mô tả ngắn:
@@ -316,6 +460,52 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
                         </td>
                       ) : (
                         <td>{productDetail.description}</td>
+                      )}
+                    </tr>
+
+                    <tr className="text-left">
+                      <td className="w-[30%] align-top font-semibold">
+                        Hình ảnh sản phẩm:
+                      </td>
+                      {productToUpdate ? (
+                        <td>
+                          <label htmlFor="file_input">
+                            {imageProduct ? (
+                              <img
+                                src={URL.createObjectURL(imageProduct)}
+                                alt="upload"
+                                className="w-[120px] h-[120px] rounded-xl object-contain my-[10px]"
+                              />
+                            ) : productToUpdate ? (
+                              <img
+                                src={productToUpdate.image}
+                                alt="upload"
+                                className="w-[120px] h-[120px] rounded-xl object-contain my-[10px]"
+                              />
+                            ) : (
+                              <img
+                                src={upload_area}
+                                alt="upload"
+                                className="w-[120px] h-[120px] rounded-xl object-contain my-[10px]"
+                              />
+                            )}
+                          </label>
+                          <input
+                            onChange={imageHandle}
+                            type="file"
+                            name="image"
+                            id="file_input"
+                            hidden
+                          />
+                        </td>
+                      ) : (
+                        <td>
+                          <img
+                            src={productDetail.image}
+                            alt="upload"
+                            className="w-[120px] h-[120px] rounded-xl object-contain my-[10px]"
+                          />
+                        </td>
                       )}
                     </tr>
                   </tbody>
@@ -343,7 +533,7 @@ const ProductDetail = ({ productToUpdate, onClose, productDetail }) => {
           {productToUpdate && (
             <div className="flex items-end justify-center p-2 shadow-top">
               <button
-                onClick={onclose}
+                onClick={() => UpdateProduct()}
                 className="relative flex justify-center outline-none font-semibold text-white bg-primaryColor border-0 hover:bg-green-700 text-base px-6 py-3 h-[3.375rem] items-center rounded-lg w-full"
               >
                 <span>Cập nhật</span>

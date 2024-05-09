@@ -10,6 +10,7 @@ export const LoginSignup = ({ onClose }) => {
     username: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const changeHandler = (e) => {
     setFormData({
@@ -37,7 +38,8 @@ export const LoginSignup = ({ onClose }) => {
       localStorage.setItem("auth-token", responseData.token);
       window.location.replace("/");
     } else {
-      alert(responseData.error);
+      // alert(responseData.error);
+      setErrorMessage(responseData.error);
     }
   };
 
@@ -58,13 +60,14 @@ export const LoginSignup = ({ onClose }) => {
       localStorage.setItem("auth-token", responseData.token);
       window.location.replace("/");
     } else {
-      alert(responseData.error);
+      // alert(responseData.error);
+      setErrorMessage(responseData.error);
     }
   };
 
   return (
     <div className="fixed z-30 top-0 left-0 right-0 bottom-0 bg-[rgba(0,_0,_0,_0.3)] flex justify-center items-center">
-      <div className="bg-white min-w-[300px] max-w-[400px] min-h-[200px] max-h-[600px] rounded-md px-8">
+      <div className="bg-white min-w-[300px] max-w-[400px] min-h-[200px] max-h-[800px] rounded-md px-8">
         <div className="flex justify-center relative items-center p-[10px]  ">
           <h3 className="font-bold text-[24px]">{stateLogin}</h3>
           <div className="absolute right-0 opacity-55">
@@ -84,33 +87,47 @@ export const LoginSignup = ({ onClose }) => {
                 value={formData.username}
                 onChange={changeHandler}
                 placeholder="tên tài khoản"
-                className="w-full h-[40px] px-[38px] rounded border-0 outline-none border-b mt-3"
+                className={`w-full h-[40px] px-[38px] border-0 outline-none border-b mt-3 ${
+                  errorMessage
+                    ? "border-red-500 transition-all duration-150"
+                    : ""
+                }`}
               />
             </div>
             <div className="relative">
               <i className="fa-solid fa-lock absolute bottom-3 left-2 text-gray-400"></i>
               <input
-                type="text"
+                type="password"
                 name="password"
                 value={formData.password}
                 onChange={changeHandler}
                 placeholder="nhập mật khẩu"
-                className="w-full h-[40px] px-[38px] rounded border-0 outline-none border-b mt-3"
+                className={`w-full h-[40px] px-[38px] border-0 outline-none border-b mt-3 ${
+                  errorMessage
+                    ? "border-red-500 transition-all duration-150"
+                    : ""
+                }`}
               />
             </div>
 
+            {errorMessage && (
+              <div className="text-red-500 text-[14px]">{errorMessage}</div>
+            )}
+
             {stateLogin === "Đăng ký" ? (
               <label className="relative p-3">
-              <input type="checkbox" />
-              <span className="ml-2 text-[14px]">
-                Tôi đã đọc và đồng ý điều khoản sử dụng
-                <span className="text-[#0e562e] ml-1">
-                  Thoả thuận người dùng, Chính sách bảo mật{" "}
+                <input type="checkbox" />
+                <span className="ml-2 text-[14px]">
+                  Tôi đã đọc và đồng ý điều khoản sử dụng
+                  <span className="text-[#0e562e] ml-1">
+                    Thoả thuận người dùng, Chính sách bảo mật{" "}
+                  </span>
                 </span>
-              </span>
-            </label>
-            ) : ""}
-            
+              </label>
+            ) : (
+              ""
+            )}
+
             <button
               onClick={() => {
                 stateLogin === "Đăng ký" ? register() : login();
@@ -134,30 +151,28 @@ export const LoginSignup = ({ onClose }) => {
             </div>
 
             {stateLogin === "Đăng ký" ? (
-              <div className="login text-center text-[14px]">
+              <div className="login text-center text-[14px] flex justify-center">
                 <span>Đã có tài khoản ?</span>
-                <Link
-                  to="#"
+                <div
                   className="text-[#0e562e] ml-1"
                   onClick={() => {
                     setStateLogin("Đăng nhập");
                   }}
                 >
                   Đăng nhập ngay
-                </Link>
+                </div>
               </div>
             ) : (
-              <div className="login text-center text-[14px]">
+              <div className="login text-center text-[14px] flex justify-center">
                 <span>Chưa có tài khoản?</span>
-                <Link
-                  to="#"
+                <div
                   className="text-[#0e562e] ml-1"
                   onClick={() => {
                     setStateLogin("Đăng ký");
                   }}
                 >
                   Đăng ký ngay
-                </Link>
+                </div>
               </div>
             )}
           </div>

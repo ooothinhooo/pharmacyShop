@@ -67,6 +67,11 @@ const Order_detail = (props) => {
     0
   );
 
+  const filterTotal =
+    orderDetails && orderDetails.map((order) => Number(order.total_order));
+  const uniqueTotal = [...new Set(filterTotal)];
+  const totalAmount = uniqueTotal.length > 0 ? uniqueTotal[0] : 0;
+
   const nameCustomer = new Set(filterNameCus);
   const phone = new Set(filterPhone);
   const address = new Set(filterAddress);
@@ -81,10 +86,9 @@ const Order_detail = (props) => {
 
   const cancelOrder = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/cancelOrder",
-        { idOrder }
-      );
+      const response = await axios.post("http://localhost:4000/cancelOrder", {
+        idOrder,
+      });
 
       if (response.data.success) {
         alert("Hủy đơn hàng thành công");
@@ -99,25 +103,24 @@ const Order_detail = (props) => {
     }
 
     // console.log(idOrder);
-  }
+  };
 
   const confirmOrder = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/confirmOrder",
-        { idOrder }
-      );
+      const response = await axios.post("http://localhost:4000/confirmOrder", {
+        idOrder,
+      });
 
       if (response.data.success) {
         alert("xác nhận đơn hàng thành công");
-        navigate(-1)
+        navigate(-1);
       } else {
-        alert("xác nhận đơn hàng thất bại")
+        alert("xác nhận đơn hàng thất bại");
       }
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <div className="flex-1">
@@ -177,7 +180,10 @@ const Order_detail = (props) => {
 
                   {status.has("Đang duyệt đơn hàng") && (
                     <div className="flex justify-end mt-4">
-                      <button onClick={cancelOrder} className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600">
+                      <button
+                        onClick={cancelOrder}
+                        className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600"
+                      >
                         Hủy đặt hàng
                       </button>
                     </div>
@@ -185,7 +191,10 @@ const Order_detail = (props) => {
 
                   {status.has("đang trên đường giao đến bạn") && (
                     <div className="flex justify-end mt-4">
-                      <button onClick={confirmOrder} className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600">
+                      <button
+                        onClick={confirmOrder}
+                        className="bg-green-500 text-white p-2 rounded-md text-sm transition-all duration-200 hover:bg-green-600"
+                      >
                         Xác nhận đơn hàng
                       </button>
                     </div>
@@ -201,9 +210,9 @@ const Order_detail = (props) => {
             <h4 className="font-semibold mb-4 text-base text-[20px]">
               Sản phẩm đã mua
             </h4>
-            {orderDetails.map((order) => {
+            {orderDetails.map((order, i) => {
               return (
-                <div className="grid gap-4">
+                <div className="grid gap-4" key={i}>
                   <div className="group">
                     <div className="grid grid-flow-col">
                       <div className="grid grid-cols-[calc(68rem/16)_1fr] items-start gap-2">
@@ -294,7 +303,7 @@ const Order_detail = (props) => {
                   </div>
                   <div className="flex space-x-4">
                     <div className="flex-1">Mã giảm giá</div>
-                    <div className="font-semibold">{shippingFee} đ</div>
+                    <div className="font-semibold">-{Number(finalTotal - totalAmount).toLocaleString('vi-VN')} đ</div>
                   </div>
                 </div>
                 <div className="bg-divider my-3 h-[1px]"></div>
@@ -305,7 +314,7 @@ const Order_detail = (props) => {
                       <span className="text-sm">({totalItems} sản phẩm)</span>
                     </div>
                     <div className="text-red-500 no-underline text-2xl font-bold leading-8">
-                      {finalTotal.toLocaleString("vi-VN")} đ
+                      {totalAmount.toLocaleString("vi-VN")} đ
                     </div>
                   </div>
                 </div>

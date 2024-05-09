@@ -17,6 +17,7 @@ const ListOrders = () => {
   const [show, setShow] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fetchInfo = async () => {
     const response = await fetch("http://localhost:4000/allOrdersAdmin");
@@ -33,11 +34,13 @@ const ListOrders = () => {
     setShow(true);
   };
 
-  const handleShowDetails = () => {
+  const handleShowDetails = (id) => {
     setShowDetails(true);
+    setSelectedOrder(id);
   };
 
-  console.log(orders);
+  // console.log(orders);
+  console.log(selectedOrder);
 
   return (
     <div className="list_product flex flex-col items-center w-full min-h-[750px] h-auto py-[10px] px-[50px] m-[30px] rounded bg-white">
@@ -92,7 +95,7 @@ const ListOrders = () => {
                     )}
                   </div>
                   <button
-                    onClick={handleShowDetails}
+                    onClick={() => handleShowDetails(order.order_id)}
                     className="border p-2 rounded-xl border-primaryColor transition-all duration-200 hover:bg-green-500 hover:text-white"
                   >
                     Xem chi tiết
@@ -125,7 +128,10 @@ const ListOrders = () => {
 
       {showDetails &&
         createPortal(
-          <OrderDetail onClose={() => setShowDetails(false)} />,
+          <OrderDetail
+            onClose={() => setShowDetails(false)}
+            selectedOrder={selectedOrder}
+          />,
           document.body
         )}
 

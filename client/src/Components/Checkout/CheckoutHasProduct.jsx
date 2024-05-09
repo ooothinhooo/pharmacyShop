@@ -85,7 +85,7 @@ export const CheckoutHasProduct = (props) => {
   };
 
   const handleNavigateToProduct = (idProduct) => {
-    const product = all_products.find((product) => product.id === idProduct);
+    const product = all_products.find((product) => product.idm === idProduct);
     navigate(`/products/${idProduct}`, { state: product });
   };
 
@@ -216,16 +216,16 @@ export const CheckoutHasProduct = (props) => {
                   <div>
                     <hr />
                     {all_products.map((e, i) => {
-                      if (cartItems[e.id] > 0) {
+                      if (cartItems[e.idm] > 0) {
                         return (
                           <div
                             className="w-full py-5 grid grid-cols-[1fr_3.8fr_1fr_1fr_1fr] gap-[10px] items-center"
                             key={i}
                           >
-                            <div onClick={() => handleNavigateToProduct(e.id)}>
+                            <div onClick={() => handleNavigateToProduct(e.idm)}>
                               <img src={e.image} alt="" className="w-[72px]" />
                             </div>
-                            <div onClick={() => handleNavigateToProduct(e.id)}>
+                            <div onClick={() => handleNavigateToProduct(e.idm)}>
                               <p className="product_name text-left">{e.name}</p>
                             </div>
 
@@ -238,7 +238,7 @@ export const CheckoutHasProduct = (props) => {
 
                             <p>
                               <button className="cartItem_quantity w-[64px] h-[50px] border border-[#ebebeb] bg-white">
-                                {cartItems[e.id]}
+                                {cartItems[e.idm]}
                               </button>
                             </p>
 
@@ -246,7 +246,7 @@ export const CheckoutHasProduct = (props) => {
                               {(
                                 e.price *
                                 (1 - e.sale / 100) *
-                                cartItems[e.id]
+                                cartItems[e.idm]
                               ).toLocaleString("vi-VN")}
                               đ
                             </p>

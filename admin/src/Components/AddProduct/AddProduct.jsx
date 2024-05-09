@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import upload_area from "../../assets/upload_area.svg";
+import { useEffect } from "react";
 
 const AddProduct = () => {
   const [image, setImage] = useState(false);
@@ -19,6 +20,20 @@ const AddProduct = () => {
     sale: "",
     image: "",
   });
+  const [typeMedicine, setTypeMedicine] = useState([]);
+
+  const fetchTypeMedicine = async () => {
+    fetch("http://localhost:4000/allTypes")
+      .then((response) => response.json())
+      .then((data) => {
+        setTypeMedicine(data.types);
+      });
+  };
+
+  useEffect(() => {
+    fetchTypeMedicine();
+  }, []);
+
   const imageHandle = (e) => {
     setImage(e.target.files[0]);
   };
@@ -86,16 +101,21 @@ const AddProduct = () => {
           value={productDetail.type_medicine}
           onChange={changeHandle}
           name="type_medicine"
-          className="add_product-selector"
+          className="add_product-selector p-2"
         >
-          <option value="1">Dược phẩm</option>
+          {typeMedicine.map((type) => (
+            <option key={type.idtype} value={type.idtype}>
+              {type.nametype}
+            </option>
+          ))}
+          {/* <option value="1">Dược phẩm</option>
           <option value="2">Chăm sóc sức khoẻ</option>
           <option value="3">Chăm sóc cá nhân</option>
           <option value="4">Sản phẩm tiện lợi</option>
           <option value="5">Thực phẩm chức năng</option>
           <option value="6">Mẹ và Bé</option>
           <option value="7">Chăm sóc sắc đẹp</option>
-          <option value="8">Thiết bị y tế</option>
+          <option value="8">Thiết bị y tế</option> */}
         </select>
       </div>
 

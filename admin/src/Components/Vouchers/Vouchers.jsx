@@ -224,9 +224,8 @@ const Vouchers = () => {
             />,
             document.body
           )}
-
-        <Toast />
       </div>
+      <Toast />
     </div>
   );
 };

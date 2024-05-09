@@ -26,7 +26,7 @@ const RecommendForYou = () => {
     return (
       <div
         className={className}
-        style={{ ...style, display: "none", background: "red" }}
+        style={{ ...style, display: "none", background: "#cfcbcb" }}
         onClick={onClick}
       />
     );
@@ -37,7 +37,7 @@ const RecommendForYou = () => {
     return (
       <div
         className={className}
-        style={{ ...style, display: "none", background: "green" }}
+        style={{ ...style, display: "none", background: "#cfcbcb" }}
         onClick={onClick}
       />
     );
@@ -96,7 +96,7 @@ const RecommendForYou = () => {
               return (
                 <Item
                   key={i}
-                  id={product.id}
+                  id={product.idm}
                   image={product.image}
                   name={product.name}
                   price={product.price}

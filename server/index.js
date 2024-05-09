@@ -122,15 +122,128 @@ app.post("/addProduct", async (req, res) => {
   }
 });
 
+// Create updates for product endpoint
+app.post("/updateProduct", async (req, res) => {
+  const {
+    id,
+    name,
+    usage,
+    unit,
+    instructions,
+    dosage,
+    description,
+    packaging,
+    quantity,
+    effect,
+    image,
+    price,
+    sale,
+    nametype,
+  } = req.body;
+
+  console.log(id);
+  console.log(name);
+  console.log(usage);
+  console.log(unit);
+  console.log(instructions);
+  console.log(dosage);
+  console.log(description);
+  console.log(packaging);
+  console.log(quantity);
+  console.log(effect);
+  console.log(image);
+  console.log(price);
+  console.log(sale);
+  console.log(nametype);
+
+  try {
+    db.query(
+      "UPDATE medicines SET name = $1, usage = $2, unit = $3, instructions = $4, dosage = $5, description = $6, packaging = $7, quantity = $8, effect = $9, image = $10, price = $11, sale = $12, type_id = $13 WHERE idm = $14",
+      [
+        name,
+        usage,
+        unit,
+        instructions,
+        dosage,
+        description,
+        packaging,
+        quantity,
+        effect,
+        image,
+        price,
+        sale,
+        nametype,
+        id,
+      ]
+    );
+
+    res.json({
+      success: true,
+      name: name,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Create delete products endpoint
 app.post("/deleteProduct", async (req, res) => {
   const { id } = req.body;
 
   try {
-    db.query("DELETE FROM medicines WHERE id = $1", [id]);
+    db.query("DELETE FROM medicines WHERE idm = $1", [id]);
     res.json({
       success: true,
       message: "Product deleted",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create update products endpoint
+app.post("/updateProduct", async (req, res) => {
+  let {
+    id,
+    name,
+    usage,
+    unit,
+    instructions,
+    dosage,
+    description,
+    packaging,
+    quantity,
+    effect,
+    image,
+    price,
+    sale,
+    type_medicine,
+  } = req.body;
+
+  try {
+    db.query(
+      "UPDATE medicines SET name = $1, usage = $2, unit = $3, instructions = $4, dosage = $5, description = $6, packaging = $7, quantity = $8, effect = $9, image = $10, price = $11, sale = $12, type_id = $13 WHERE idm = $14",
+      [
+        name,
+        usage,
+        unit,
+        instructions,
+        dosage,
+        description,
+        packaging,
+        quantity,
+        effect,
+        image,
+        price,
+        sale,
+        type_medicine,
+        id,
+      ]
+    );
+
+    res.json({
+      success: true,
+      name: name,
     });
   } catch (err) {
     console.log(err);
@@ -160,6 +273,65 @@ app.get("/allTypes", async (req, res) => {
       success: true,
       types: result.rows,
     });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// create add type endpoint
+app.post("/addType", async (req, res) => {
+  let { name } = req.body;
+
+  try {
+    db.query("INSERT INTO medicinetypes (nametype) VALUES ($1)", [name]);
+
+    res.json({
+      success: true,
+      name: name,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create update type endpoint
+app.post("/updateType", async (req, res) => {
+  let { id, name } = req.body;
+
+  try {
+    db.query("UPDATE medicinetypes SET nametype = $1 WHERE idType = $2", [
+      name,
+      id,
+    ]);
+
+    res.json({
+      success: true,
+      name: name,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create delete medicine type endpoint
+app.post("/deleteType", async (req, res) => {
+  const { id } = req.body;
+  try {
+    const check = await db.query("SELECT * FROM medicines WHERE type_id = $1", [
+      id,
+    ]);
+    if (check.rows.length > 0) {
+      res.json({
+        success: false,
+        message: "Type has products",
+      });
+    } else {
+      db.query("DELETE FROM medicinetypes WHERE idType = $1", [id]);
+      res.json({
+        success: true,
+        message: "Type deleted",
+      });
+    }
   } catch (err) {
     console.log(err);
   }
@@ -238,7 +410,7 @@ app.get("/allCustomers", async (req, res) => {
 app.get("/allOrdersAdmin", async (req, res) => {
   try {
     const result = await db.query(
-      "SELECT * FROM orders JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id "
+      "SELECT * FROM orders JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id"
     );
     res.json({
       success: true,
@@ -251,9 +423,11 @@ app.get("/allOrdersAdmin", async (req, res) => {
 
 // Create get all order details admin endpoint
 app.get("/allOrderDetailsAdmin", async (req, res) => {
+  const { id } = req.query;
   try {
     const result = await db.query(
-      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id JOIN medicines ON orders_detail.medicine_id = medicines.id JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id"
+      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id JOIN medicines ON orders_detail.medicine_id = medicines.idm JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id WHERE orders_detail.order_id = $1",
+      [id]
     );
     res.json({
       success: true,
@@ -292,6 +466,59 @@ app.get("/allSuppliers", async (req, res) => {
     res.json({
       success: true,
       suppliers: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create add supplier endpoint
+app.post("/addSupplier", async (req, res) => {
+  let { name, phone, address } = req.body;
+
+  try {
+    db.query(
+      "INSERT INTO suppliers (sup_name, sup_phone, sup_address) VALUES ($1, $2, $3)",
+      [name, phone, address]
+    );
+
+    res.json({
+      success: true,
+      name: name,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create update supplier endpoint
+app.post("/updateSupplier", async (req, res) => {
+  let { id, supplier } = req.body;
+
+  try {
+    db.query(
+      "UPDATE suppliers SET sup_name = $1, sup_phone = $2, sup_address = $3 WHERE id = $4",
+      [supplier.name, supplier.phone, supplier.address, id]
+    );
+
+    res.json({
+      success: true,
+      name: supplier.name,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Create delete supplier endpoint
+app.post("/deleteSupplier", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    db.query("DELETE FROM suppliers WHERE id = $1", [id]);
+    res.json({
+      success: true,
+      message: "Supplier deleted",
     });
   } catch (err) {
     console.log(err);
@@ -451,6 +678,13 @@ app.get("/search", async (req, res) => {
 
 // Create Endpoint for register the user
 app.post("/register", async (req, res) => {
+  if (!req.body.password || !req.body.username) {
+    return res.status(400).json({
+      success: false,
+      error: "Không được để trống username hoặc password",
+    });
+  }
+
   let check = await db.query("SELECT * FROM accounts WHERE username = $1", [
     req.body.username,
   ]);
@@ -458,7 +692,7 @@ app.post("/register", async (req, res) => {
   if (check.rows.length > 0) {
     return res.status(400).json({
       success: false,
-      error: "username already exists",
+      error: "Tên tài khoản đã tồn tại",
     });
   }
 
@@ -498,6 +732,13 @@ app.post("/register", async (req, res) => {
 
 // Create Endpoint for login the user
 app.post("/login", async (req, res) => {
+  if (!req.body.password || !req.body.username) {
+    return res.status(400).json({
+      success: false,
+      error: "Không được để trống username hoặc password",
+    });
+  }
+
   let user = await db.query("SELECT * FROM accounts WHERE username = $1", [
     req.body.username,
   ]);
@@ -519,13 +760,13 @@ app.post("/login", async (req, res) => {
     } else {
       res.json({
         success: false,
-        error: "Password is incorrect",
+        error: "Mật khẩu không đúng",
       });
     }
   } else {
     res.json({
       success: false,
-      error: "Username is incorrect",
+      error: "Tên đăng nhập không đúng",
     });
   }
 });
@@ -791,7 +1032,7 @@ app.post("/addOrder", fetchUser, async (req, res) => {
     const orderId = result.rows[0].order_id;
 
     for (let i = 0; i < hasProduct.length; i++) {
-      const product = await db.query("SELECT * FROM medicines WHERE id = $1", [
+      const product = await db.query("SELECT * FROM medicines WHERE idm = $1", [
         hasProduct[i],
       ]);
 
@@ -839,7 +1080,7 @@ app.post("/allOrderDetails", async (req, res) => {
   console.log("idOrder: " + idOrder);
   try {
     const result = await db.query(
-      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id  JOIN medicines ON orders_detail.medicine_id = medicines.id  JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id WHERE orders.order_id = $1",
+      "SELECT * FROM orders_detail JOIN orders ON orders_detail.order_id = orders.order_id  JOIN medicines ON orders_detail.medicine_id = medicines.idm  JOIN accounts ON orders.ida = accounts.id JOIN customers ON customers.id_user = accounts.id WHERE orders.order_id = $1",
       [idOrder]
     );
 

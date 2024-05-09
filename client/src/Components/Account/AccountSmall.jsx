@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import avatar from "../Assets/user.png";
 import silverCard from "../Assets/silver-card.png";
 import silverRank from "../Assets/silver-rank.png";
 import goldRank from "../Assets/gold-rank.png";
-import rewardPoint from "../Assets/reward_point.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { ShopContext } from "../../Context/ShopContext";
 
 export const AccountSmall = (props) => {
